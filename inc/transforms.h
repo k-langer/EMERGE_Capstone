@@ -2,6 +2,7 @@
 #define TRANSFORMS_H
 
 #include <math.h>
+#define _USE_MATH_DEFINES
 
 typedef struct cartesian {
     double x;

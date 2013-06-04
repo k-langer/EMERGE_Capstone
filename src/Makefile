@@ -2,7 +2,7 @@
 
 CC = gcc
 
-CFLAGS = -g -O0
+CFLAGS = -g -O0 -lm
 
 INC = -I ../inc
 
