@@ -1,6 +1,4 @@
 #include "transforms.h"
-#include <math.h>
-
 
 cord_t cartToCylind(cord_t c) {
     int r = sqrt(c.cart.x*c.cart.x + c.cart.y*c.cart.y);
