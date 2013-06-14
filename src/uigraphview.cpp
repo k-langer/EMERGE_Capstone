@@ -27,12 +27,9 @@ void UIGraphView::initializeGL( QGLPainter *painter )
 
 void UIGraphView::paintGL( QGLPainter *painter )
 {
-    // Draws the first sphere
+    this->sphere1->setPosition( QVector3D(.4,0,0) );
     this->sphere1->draw( painter );
 
-    // Translates and draws the second sphere
-    painter->modelViewMatrix().push();
-    painter->modelViewMatrix().translate( 1.0f, 0.0f, 0.0f );
+    this->sphere2->setPosition( QVector3D(.8,0,0) );
     this->sphere2->draw( painter );
-    painter->modelViewMatrix().pop();
 }
