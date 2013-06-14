@@ -27,14 +27,18 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     this->gridLayout->addWidget( cameraView, 0, 0, 4, 4 );
 
     // User graph setup
-    QWidget *userGraph = new QWidget();
-    userGraph->setStyleSheet( "QWidget {background:green;}" );
-    this->gridLayout->addWidget( userGraph, 0, 5, 2, 1 );
+    this->userGraphView = new UIGraphView();
+    QWidget *userGraphContainer = QWidget::createWindowContainer(this->userGraphView);
+    userGraphContainer->setMinimumSize(1,1);
+    userGraphContainer->setMaximumSize(1000,1000);
+    this->gridLayout->addWidget( userGraphContainer, 0, 5, 2, 1 );
 
     // Robot graph setup
-    QWidget *robotGraph = new QWidget();
-    robotGraph->setStyleSheet( "QWidget {background:green;}" );
-    this->gridLayout->addWidget( robotGraph, 2, 5, 2, 1 );
+    this->robotGraphView = new UIGraphView();
+    QWidget *robotGraphContainer = QWidget::createWindowContainer(this->robotGraphView);
+    robotGraphContainer->setMinimumSize(1,1);
+    robotGraphContainer->setMaximumSize(1000,1000);
+    this->gridLayout->addWidget( robotGraphContainer, 2, 5, 2, 1 );
 
     // Robot type label setup
     this->robotTypeLabel = new QLabel( "PhantomX Reactor" );
@@ -53,7 +57,11 @@ UIMainWindow::UIMainWindow( QWidget *parent )
 
 UIMainWindow::~UIMainWindow()
 {
-
+    delete statusBarLabel;
+    delete gridLayout;
+    delete robotTypeLabel;
+    delete robotGraphView;
+    delete userGraphView;
 }
 
 void UIMainWindow::setStatus( status_t newStatus )

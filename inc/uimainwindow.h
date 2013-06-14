@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <vector>
+#include "inc/uigraphview.h"
 
 enum status_t {
     NOT_CONNECTED,
@@ -41,6 +42,8 @@ private:
     // Layout objects
     QGridLayout *gridLayout;
     QLabel *robotTypeLabel;
+    UIGraphView *robotGraphView;
+    UIGraphView *userGraphView;
 
     // Private methods
     void _setupStatisticGrid();
