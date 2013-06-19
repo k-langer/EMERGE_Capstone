@@ -19,4 +19,5 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     inc/uimainwindow.h \
-    inc/uigraphview.h
+    inc/uigraphview.h \
+    inc/util.h
