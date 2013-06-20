@@ -1,5 +1,5 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef UIUTIL_H
+#define UIUTIL_H
 
 #include <QVector3D>
 #include <cmath>

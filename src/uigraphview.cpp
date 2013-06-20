@@ -1,5 +1,5 @@
 #include "inc/uigraphview.h"
-#include "inc/util.h"
+#include "inc/uiutil.h"
 #include <Qt3D/QGLSphere>
 #include <Qt3D/QGLCylinder>
 #include <Qt3D/QGLBuilder>
