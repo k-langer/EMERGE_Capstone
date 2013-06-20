@@ -22,9 +22,8 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     this->gridLayout->setVerticalSpacing( 20 );
 
     // Camera view setup
-    QWidget *cameraView = new QWidget();
-    cameraView->setStyleSheet( "QWidget {background:blue;}" );
-    this->gridLayout->addWidget( cameraView, 0, 0, 4, 4 );
+    this->cameraView = new UICameraView();
+    this->gridLayout->addWidget( this->cameraView, 0, 0, 4, 4 );
 
     // User graph setup
     this->userGraphView = new UIGraphView();
@@ -62,6 +61,7 @@ UIMainWindow::~UIMainWindow()
     delete robotTypeLabel;
     delete robotGraphView;
     delete userGraphView;
+    delete cameraView;
 }
 
 void UIMainWindow::setStatus( status_t newStatus )
