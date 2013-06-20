@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-LIBS += $(SUBLIBS) -lQt53D -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core
+LIBS += $(SUBLIBS) -lQt53D -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lQt5Multimedia -lQt5MultimediaWidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,9 +15,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     src/uimainwindow.cpp \
-    src/uigraphview.cpp
+    src/uigraphview.cpp \
+    src/uicameraview.cpp
 
 HEADERS  += mainwindow.h \
     inc/uimainwindow.h \
     inc/uigraphview.h \
-    inc/util.h
+    inc/util.h \
+    inc/uicameraview.h
