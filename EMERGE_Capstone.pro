@@ -21,5 +21,5 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     inc/uimainwindow.h \
     inc/uigraphview.h \
-    inc/util.h \
-    inc/uicameraview.h
+    inc/uicameraview.h \
+    inc/uiutil.h
