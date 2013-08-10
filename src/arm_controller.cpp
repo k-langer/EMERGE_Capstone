@@ -33,11 +33,13 @@ using namespace std;
 
 string SERIAL_PORT = "/dev/tty.usbserial-A901G712";
 string BAUD_RATE = "38400";
-int INPUT_LENGTH = 31;
 unsigned int SLEEP_TIME = 10000000; //ten second
 unsigned int INIT_TIME = 10000000; //ten second
 int NO = 0;
 int YES = 1;
+int INPUT_LENGTH = 33;
+int INPUT_COUNT = 9;
+int DELAY_INDEX = 7;
 
 #define EXAMPLE_HOST "localhost"
 #define EXAMPLE_USER "zhen"
@@ -118,17 +120,17 @@ int main(int argc, const char **argv){
 } 
 
 void process_input(int fd, string input){
-    string inputArray[8];
+    string inputArray[INPUT_COUNT];
     int index = 0, delay_time;
 
     bool input_error = false;
     index = 0;
     input_error = false;
-    for(int i = 0; i < 8; i++){
+    for(int i = 0; i < INPUT_COUNT; i++){
         inputArray[i] = "";
     }
     for(int i = 0; i < input.length(); i++){
-        if(input.length() != 31){
+        if(input.length() != INPUT_LENGTH){
             input_error = true;
             break;
         }
@@ -136,7 +138,7 @@ void process_input(int fd, string input){
             inputArray[index] += input[i];
         }else{
             index++;
-            if(index == 8){
+            if(index == INPUT_COUNT){
                 cout << "too many argument"<<endl;
                 input_error = true;
             }
@@ -147,11 +149,11 @@ void process_input(int fd, string input){
     }
     if(input_error == false){
         cout << "passing values to serial port.."<<endl;
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < INPUT_COUNT; i++){
             cout << inputArray[i] << endl;
             toSerialPort(fd, inputArray[i]);
         }
-        delay_time = atoi(inputArray[6].c_str())+10;
+        delay_time = atoi(inputArray[DELAY_INDEX].c_str())+10;
         delay_time *= 1000;
         cout << "sleeping:" << delay_time << endl;
         usleep(delay_time);
