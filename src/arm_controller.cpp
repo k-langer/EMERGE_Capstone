@@ -33,7 +33,7 @@ using namespace std;
 
 string SERIAL_PORT = "/dev/tty.usbserial-A901G712";
 string BAUD_RATE = "38400";
-unsigned int SLEEP_TIME = 10000000; //ten second
+unsigned int SLEEP_TIME = 1000; //ten second
 unsigned int INIT_TIME = 10000000; //ten second
 int NO = 0;
 int YES = 1;
@@ -90,9 +90,7 @@ int main(int argc, const char **argv){
             if(control_input.length() > 0){
                 process_input(fd, control_input);
             }else{
-                cout << "No data is available."<<endl;
-                cout << "Sleeping for " << SLEEP_TIME << endl;
-                usleep(SLEEP_TIME);//sleep one second
+                usleep(SLEEP_TIME);
             }
         }
         while(1){
@@ -103,9 +101,7 @@ int main(int argc, const char **argv){
                 if(control_input.length() > 0){
                     process_input(fd, control_input);
                 }else{
-                    cout << "No data is available."<<endl;
-                    cout << "Sleeping for " << SLEEP_TIME << endl;
-                    usleep(SLEEP_TIME);//sleep one second
+                  //  usleep(SLEEP_TIME);
                 }
             }
         }
@@ -130,10 +126,6 @@ void process_input(int fd, string input){
         inputArray[i] = "";
     }
     for(int i = 0; i < input.length(); i++){
-        if(input.length() != INPUT_LENGTH){
-            input_error = true;
-            break;
-        }
         if(input[i] != ' '){
             inputArray[index] += input[i];
         }else{
@@ -144,7 +136,7 @@ void process_input(int fd, string input){
             }
         }
     }
-    if(input.length() != INPUT_LENGTH){
+    if(input.length() != INPUT_LENGTH && input.length() != 2){
         input_error = true;
     }
     if(input_error == false){
@@ -153,10 +145,14 @@ void process_input(int fd, string input){
             cout << inputArray[i] << endl;
             toSerialPort(fd, inputArray[i]);
         }
-        delay_time = atoi(inputArray[DELAY_INDEX].c_str())+10;
-        delay_time *= 1000;
-        cout << "sleeping:" << delay_time << endl;
-        usleep(delay_time);
+        char response[1];
+        read (fd, *response, sizeof response);
+        cout << "Robot response:" << response << endl;
+
+        //delay_time = atoi(inputArray[DELAY_INDEX].c_str())+10;
+        //delay_time *= 1000;
+        //cout << "sleeping:" << delay_time << endl;
+        //usleep(delay_time);
     }else{
         cout << "ignore this input: " << input << endl;
     }

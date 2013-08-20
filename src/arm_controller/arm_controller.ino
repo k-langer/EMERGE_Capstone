@@ -165,10 +165,13 @@ void setup() {
   PutArmToSleep();
 
   MSound(3, 60, 2000, 80, 2250, 900, 2500);
+  Serial.println("MSound execute");
+  Serial.println("Move to home");
 
   //set Gripper Compliance so it doesn't tear itself apart
   ax12SetRegister(SID_GRIP, AX_CW_COMPLIANCE_SLOPE, 128);
   ax12SetRegister(SID_GRIP, AX_CCW_COMPLIANCE_SLOPE, 128);
+  Serial.println("Setup Complete");
 
 }
 
@@ -187,6 +190,7 @@ int getInputValue(int numByte, boolean firstSignByte = false, char* msg = "" ){
     for(int i = 0; i < numByte; i++){
         while(Serial.available() <= 0){}
         a[i] = Serial.read() - 48;
+        Serial.print(a[i]);
         if(i == 0 && firstSignByte == true){//negative value
           //do nothing
         }else{
@@ -213,16 +217,19 @@ void loop(){
   //03 perform action
   int action = getInputValue(2, false);
   if(action == 0){
+     //Serial.print("Sleep");
      getInputValue(23, false);
      PutArmToSleep();
      MSound(3, 60, 2000, 80, 2250, 900, 2500);
   }else if(action == 1){
+    //Serial.print("Home");
     getInputValue(23, false);
     MoveArmToHome();
   }else if(action == 2){
     getInputValue(23, false);
    //torque on 
   }else if(action == 3){
+    //Serial.print("Command");
     int base, shoulder, elbow, wrist, wristRot, grip, waitTime;
     boolean ifWait;
     base = getInputValue(3, false);
@@ -239,17 +246,17 @@ void loop(){
        ifWait = true; 
     }
     //waitTime = sDeltaTime;
-    Serial.println(base);
-    Serial.println(shoulder);
-    Serial.println(elbow);
-    Serial.println(wrist);
-    Serial.println(wristRot);
-    Serial.println(grip);
-    Serial.println(waitTime);
-    Serial.println(ifWait);
-    
+    //Serial.println(base);
+    //Serial.println(shoulder);
+    //Serial.println(elbow);
+    //Serial.println(wrist);
+    //Serial.println(wristRot);
+    //Serial.println(grip);
+    //Serial.println(waitTime);
+    //Serial.println(ifWait);
     MoveArmTo(base, shoulder, elbow, wrist, wristRot, grip, waitTime, ifWait);   
   } 
+  Serial.println(1);
 }
 /*void loop() {
   boolean fChanged = false;
