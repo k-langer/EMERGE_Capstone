@@ -1,0 +1,55 @@
+-- This file must import into database named capstone
+
+
+-- create tables
+
+DROP TABLE IF EXISTS xyz;
+CREATE TABLE xyz (
+    id INT NOT NULL AUTO_INCREMENT,
+    value VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS command;
+CREATE TABLE command (
+    id INT NOT NULL AUTO_INCREMENT,
+    input VARCHAR(100) NOT NULL,
+    PRIMARY KEY(id)
+);
+
+-- craete procedures
+
+DROP PROCEDURE IF EXISTS get_xyz;
+delimiter /
+CREATE PROCEDURE get_xyz(OUT rs CHAR(100))
+BEGIN
+    DECLARE val_id INT;
+    SELECT value INTO rs FROM xyz ORDER BY id ASC LIMIT 1;
+    SELECT id INTO val_id FROM xyz ORDER BY id ASC LIMIT 1;
+    DELETE FROM xyz WHERE id = val_id;
+END/
+delimiter ;
+
+DROP PROCEDURE IF EXISTS get_new_data;
+delimiter /
+CREATE PROCEDURE get_new_data(OUT rs CHAR(100))
+BEGIN
+    DECLARE val_id INT;
+    SELECT input INTO rs FROM command ORDER BY id ASC LIMIT 1;
+    SELECT id INTO val_id FROM command ORDER BY id ASC LIMIT 1;
+    DELETE FROM command WHERE id = val_id;
+END/
+delimiter ;
+
+DROP PROCEDURE IF EXISTS add_input;
+delimiter /
+CREATE PROCEDURE add_input(IN input CHAR(100))
+BEGIN
+     INSERT INTO command VALUES(DEFAULT, input);
+END/
+delimiter ;
+
+
+
+
+

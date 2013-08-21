@@ -1,0 +1,1252 @@
+port is open.
+Building serial connection with the robot arm.
+Serial port connection is open and configured.
+Database is connected.
+[8-20 22:4:37] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+	
+received at: [8-20 22:4:37] 
+[8-20 22:4:37] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Reactor Online.MSound executeMove to homeSetup CompReactor Online.MSound executeMove to homeSetup CompleteCommand	
+received at: [8-20 22:4:38] 
+[8-20 22:4:38] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:39] 
+[8-20 22:4:39] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:39] 
+[8-20 22:4:39] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:40] 
+[8-20 22:4:40] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:41] 
+[8-20 22:4:41] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:42] 
+[8-20 22:4:42] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:42] 
+[8-20 22:4:42] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:43] 
+[8-20 22:4:43] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:44] 
+[8-20 22:4:44] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:45] 
+[8-20 22:4:45] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:45] 
+[8-20 22:4:45] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:46] 
+[8-20 22:4:46] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:47] 
+[8-20 22:4:47] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:48] 
+[8-20 22:4:48] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:48] 
+[8-20 22:4:48] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:49] 
+[8-20 22:4:49] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:50] 
+[8-20 22:4:50] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:50] 
+[8-20 22:4:50] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:51] 
+[8-20 22:4:51] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:52] 
+[8-20 22:4:52] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:53] 
+[8-20 22:4:53] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:53] 
+[8-20 22:4:53] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:54] 
+[8-20 22:4:54] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:55] 
+[8-20 22:4:55] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:56] 
+[8-20 22:4:56] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:56] 
+[8-20 22:4:56] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:57] 
+[8-20 22:4:57] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:58] 
+[8-20 22:4:58] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:58] 
+[8-20 22:4:58] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:4:59] 
+[8-20 22:4:59] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:0] 
+[8-20 22:5:0] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:1] 
+[8-20 22:5:1] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:1] 
+[8-20 22:5:1] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:2] 
+[8-20 22:5:2] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:3] 
+[8-20 22:5:3] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:4] 
+[8-20 22:5:4] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:4] 
+[8-20 22:5:4] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:5] 
+[8-20 22:5:5] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:6] 
+[8-20 22:5:6] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:7] 
+[8-20 22:5:7] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:7] 
+[8-20 22:5:7] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:8] 
+[8-20 22:5:8] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:9] 
+[8-20 22:5:9] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:9] 
+[8-20 22:5:9] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:10] 
+[8-20 22:5:10] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:11] 
+[8-20 22:5:11] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:12] 
+[8-20 22:5:12] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:12] 
+[8-20 22:5:12] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:13] 
+[8-20 22:5:13] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:14] 
+[8-20 22:5:14] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:15] 
+[8-20 22:5:15] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:15] 
+[8-20 22:5:15] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:16] 
+[8-20 22:5:16] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:17] 
+[8-20 22:5:17] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:17] 
+[8-20 22:5:17] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:18] 
+[8-20 22:5:18] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:19] 
+[8-20 22:5:19] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:20] 
+[8-20 22:5:20] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:20] 
+[8-20 22:5:20] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:21] 
+[8-20 22:5:21] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:22] 
+[8-20 22:5:22] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:23] 
+[8-20 22:5:23] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:23] 
+[8-20 22:5:23] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:24] 
+[8-20 22:5:24] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:25] 
+[8-20 22:5:25] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:26] 
+[8-20 22:5:26] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:26] 
+[8-20 22:5:26] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:27] 
+[8-20 22:5:27] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:28] 
+[8-20 22:5:28] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:28] 
+[8-20 22:5:28] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:29] 
+[8-20 22:5:29] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:30] 
+[8-20 22:5:30] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:31] 
+[8-20 22:5:31] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:31] 
+[8-20 22:5:31] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:32] 
+[8-20 22:5:32] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:33] 
+[8-20 22:5:33] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:34] 
+[8-20 22:5:34] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:34] 
+[8-20 22:5:34] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:35] 
+[8-20 22:5:35] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:36] 
+[8-20 22:5:36] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:36] 
+[8-20 22:5:36] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:37] 
+[8-20 22:5:37] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:38] 
+[8-20 22:5:38] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:39] 
+[8-20 22:5:39] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:39] 
+[8-20 22:5:39] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:40] 
+[8-20 22:5:40] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:41] 
+[8-20 22:5:41] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:42] 
+[8-20 22:5:42] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:42] 
+[8-20 22:5:42] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:43] 
+[8-20 22:5:43] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:44] 
+[8-20 22:5:44] passing values to serial port..
+03
+210
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:44] 
+[8-20 22:5:45] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:45] 
+[8-20 22:5:45] passing values to serial port..
+03
+810
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:46] 
+[8-20 22:5:46] passing values to serial port..
+03
+500
+389
+358
+700
+500
+200
+0700
+1
+Robot response:
+Command	
+received at: [8-20 22:5:47] 

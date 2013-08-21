@@ -180,7 +180,7 @@ void setup() {
 // loop: Our main Loop!
 //===================================================================================================
 int getInputValue(int numByte, boolean firstSignByte = false, char* msg = "" ){
-    Serial.println(msg);
+    //Serial.println(msg);
     int a[numByte];
     int result = 0;
     int trueNumByte = numByte;
@@ -190,7 +190,7 @@ int getInputValue(int numByte, boolean firstSignByte = false, char* msg = "" ){
     for(int i = 0; i < numByte; i++){
         while(Serial.available() <= 0){}
         a[i] = Serial.read() - 48;
-        Serial.print(a[i]);
+        //Serial.print(a[i]);
         if(i == 0 && firstSignByte == true){//negative value
           //do nothing
         }else{
@@ -208,6 +208,14 @@ int getInputValue(int numByte, boolean firstSignByte = false, char* msg = "" ){
     return result;
     
 }
+void sleep(int t){
+  while(bioloid.interpolating > 0){  // do this while we have not reached our new pose
+        bioloid.interpolateStep();     // move servos, if necessary. 
+        Serial.print("moving");
+        delay(t/5);
+  }
+  
+}
 //MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, int sGrip, int wTime, boolean fWait)
 // MoveArmTo(512, 212, 212, 512, 512, 256, sDeltaTime, true); 
 void loop(){
@@ -217,19 +225,23 @@ void loop(){
   //03 perform action
   int action = getInputValue(2, false);
   if(action == 0){
-     //Serial.print("Sleep");
+     Serial.print("Sleep");
      getInputValue(23, false);
      PutArmToSleep();
      MSound(3, 60, 2000, 80, 2250, 900, 2500);
+     Serial.println('\t');
   }else if(action == 1){
-    //Serial.print("Home");
+    Serial.print("Home");
     getInputValue(23, false);
     MoveArmToHome();
+    Serial.println('\t');
   }else if(action == 2){
+    Serial.print("Reboot");
     getInputValue(23, false);
-   //torque on 
+    setup();
+   Serial.println('\t');
   }else if(action == 3){
-    //Serial.print("Command");
+    Serial.print("Command");
     int base, shoulder, elbow, wrist, wristRot, grip, waitTime;
     boolean ifWait;
     base = getInputValue(3, false);
@@ -246,17 +258,26 @@ void loop(){
        ifWait = true; 
     }
     //waitTime = sDeltaTime;
-    //Serial.println(base);
-    //Serial.println(shoulder);
-    //Serial.println(elbow);
-    //Serial.println(wrist);
-    //Serial.println(wristRot);
-    //Serial.println(grip);
-    //Serial.println(waitTime);
-    //Serial.println(ifWait);
-    MoveArmTo(base, shoulder, elbow, wrist, wristRot, grip, waitTime, ifWait);   
+    Serial.println(' ');
+    Serial.println(base);
+    Serial.println(' ');
+    Serial.println(shoulder);
+    Serial.println(' ');
+    Serial.println(elbow);
+    Serial.println(' ');
+    Serial.println(wrist);
+    Serial.println(' ');
+    Serial.println(wristRot);
+    Serial.println(' ');
+    Serial.println(grip);
+    Serial.println(' ');
+    Serial.println(waitTime);
+    Serial.println(' ');
+    Serial.println(ifWait);
+    MoveArmTo(base, shoulder, elbow, wrist, wristRot, grip, waitTime, ifWait);
+    
+    Serial.println('\t');   
   } 
-  Serial.println(1);
 }
 /*void loop() {
   boolean fChanged = false;

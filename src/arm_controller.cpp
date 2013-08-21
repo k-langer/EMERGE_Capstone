@@ -52,6 +52,8 @@ int open_port(void);
 int set_interface_attribs (int fd, int speed, int parity);
 void set_blocking (int fd, int should_block);
 void process_input(int, string);
+string get_time();
+string to_string(int number);
 
 //main
 int main(int argc, const char **argv){
@@ -100,9 +102,9 @@ int main(int argc, const char **argv){
                 control_input = res->getString("_message");
                 if(control_input.length() > 0){
                     process_input(fd, control_input);
-                }else{
+                }//else{
                   //  usleep(SLEEP_TIME);
-                }
+               // }
             }
         }
     } catch (sql::SQLException &e) {
@@ -115,6 +117,21 @@ int main(int argc, const char **argv){
     return EXIT_SUCCESS;
 } 
 
+string get_time(){
+    time_t t = time(0);   // get time now
+    struct tm * now = localtime( & t );
+    string result = "";
+    result += to_string(now->tm_mon + 1);
+    result += "-";
+    result += to_string(now->tm_mday);
+    result += " ";
+    result += to_string(now->tm_hour);
+    result += ":";
+    result += to_string(now->tm_min);
+    result += ":";
+    result += to_string(now->tm_sec);
+    return result;
+}
 void process_input(int fd, string input){
     string inputArray[INPUT_COUNT];
     int index = 0, delay_time;
@@ -140,15 +157,21 @@ void process_input(int fd, string input){
         input_error = true;
     }
     if(input_error == false){
+        cout << "[" << get_time() << "] ";
         cout << "passing values to serial port.."<<endl;
         for(int i = 0; i < INPUT_COUNT; i++){
             cout << inputArray[i] << endl;
             toSerialPort(fd, inputArray[i]);
         }
-        char response[1];
-        read (fd, *response, sizeof response);
-        cout << "Robot response:" << response << endl;
-
+        char response[1] = {'0'};
+        cout << "Robot response:"<<endl;
+        while(*response != '\t'){
+            read (fd, response, sizeof response);
+            if(*response != '\n')
+                cout << response[0];
+        }
+        cout << endl;
+        cout << "received at: [" << get_time() << "] "<<endl;
         //delay_time = atoi(inputArray[DELAY_INDEX].c_str())+10;
         //delay_time *= 1000;
         //cout << "sleeping:" << delay_time << endl;
@@ -230,4 +253,17 @@ void set_blocking (int fd, int should_block){
     if (tcsetattr (fd, TCSANOW, &tty) != 0)
         printf("error %d setting term attributes", errno);
 }
-  
+ string to_string(int number){
+     if (number == 0) return "0";
+     string temp="";
+     string returnvalue="";
+     while (number>0){
+         temp+=number%10+48;
+         number/=10;
+     }
+     for (int i=0;i<temp.length();i++)
+         returnvalue+=temp[temp.length()-i-1];
+     return returnvalue;
+ }
+
+
