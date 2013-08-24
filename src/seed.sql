@@ -24,9 +24,11 @@ delimiter /
 CREATE PROCEDURE get_xyz(OUT rs CHAR(100))
 BEGIN
     DECLARE val_id INT;
-    SELECT value INTO rs FROM xyz ORDER BY id ASC LIMIT 1;
-    SELECT id INTO val_id FROM xyz ORDER BY id ASC LIMIT 1;
-    DELETE FROM xyz WHERE id = val_id;
+    IF(EXISTS(SELECT value FROM xyz ORDER BY id ASC LIMIT 1)) THEN
+        SELECT value INTO rs FROM xyz ORDER BY id ASC LIMIT 1;
+        SELECT id INTO val_id FROM xyz ORDER BY id ASC LIMIT 1;
+        DELETE FROM xyz WHERE id = val_id;
+    END IF;
 END/
 delimiter ;
 
@@ -35,9 +37,11 @@ delimiter /
 CREATE PROCEDURE get_new_data(OUT rs CHAR(100))
 BEGIN
     DECLARE val_id INT;
-    SELECT input INTO rs FROM command ORDER BY id ASC LIMIT 1;
-    SELECT id INTO val_id FROM command ORDER BY id ASC LIMIT 1;
-    DELETE FROM command WHERE id = val_id;
+    IF(EXISTS(SELECT input FROM command ORDER BY id ASC LIMIT 1)) THEN
+        SELECT input INTO rs FROM command ORDER BY id ASC LIMIT 1;
+        SELECT id INTO val_id FROM command ORDER BY id ASC LIMIT 1;
+        DELETE FROM command WHERE id = val_id;
+    END IF;
 END/
 delimiter ;
 

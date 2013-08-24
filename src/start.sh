@@ -11,3 +11,9 @@ if [ ! -d "log" ]
 then
     mkdir log
 fi
+
+if [ $1 == "mysqld" ]
+then
+    echo "Starting mysqld..."
+    `start_mysql`
+fi

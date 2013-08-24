@@ -124,19 +124,20 @@ int main(int argc, const char **argv){
         int total = 0;
         int successful = 0;
         int no_solution = 0;
+        string tmp;
         while(1){
             stmt->execute("CALL get_xyz(@rs)"); 
-            if(stmt->getUpdateCount() == 0){
-                continue;
+            
+            res.reset(stmt->executeQuery("select @rs as _val"));
+            while (res->next()) {
+                tmp = res->getString("_val");
+                strs = split(tmp, ' ');
             }
+            if(tmp.length() == 0) continue;
 
             get_current_time();
             cout << "Data available..." << endl;
-            total += 1;
-            res.reset(stmt->executeQuery("select @rs as _val"));
-            while (res->next()) {
-                strs = split(res->getString("_val"), ' ');
-            }
+            total += 1;    
             if(strs.size() != XYZ_INPUT_COUNT){
                 get_current_time();
                 cout << "Ignore this bad input:"<< emerge(strs, ' ') << endl;
@@ -230,7 +231,7 @@ ArmAngle to_armangle(Cartesian c, double wristAngle, double wristRotAngle, doubl
     angles.grip = grip;
     
     //calculate the base and turn them into 2d plane problem
-    angles.base = atan(c.y / c.x);
+    angles.base = atan2(c.y, c.x);
     cout << "base:" << angles.base << endl;
     double axis_y = c.z;
     double axis_x = sqrt(pow(c.y, 2.0) + pow(c.x, 2.0));
@@ -264,12 +265,12 @@ ArmAngle to_armangle(Cartesian c, double wristAngle, double wristRotAngle, doubl
     
     //acos(1) == NaN causing problem
     if(abs((int)(temp/temp2)) == 1) angles.elbow = 0;
-    else angles.elbow = acos((temp / temp2)) * 180 / PI;
+    else angles.elbow = atan2(sqrt(pow(temp2, 2) - pow(temp, 2)), temp) * 180 / PI;
     temp = normalize(pow(SHOULDER_LENGTH, 2.0) + pow(dse, 2.0) - pow(ELBOW_LENGTH, 2.0));
-    temp2 = normalize(temp / (2*SHOULDER_LENGTH*dse));
-    angles.shoulder = acos( temp2 );
+    temp2 =  (2*SHOULDER_LENGTH*dse);
+    angles.shoulder = atan2(sqrt(pow(temp2, 2) - pow(temp, 2)), temp);
     cout << "shoulder1:"<< angles.shoulder<<endl; 
-    angles.shoulder += atan(elbow_y / elbow_x);
+    angles.shoulder += atan2(elbow_y, elbow_x);
     cout << "shoulder2:"<< angles.shoulder<<endl; 
     angles.base *= 180 / PI;
     angles.shoulder *= 180 / PI;

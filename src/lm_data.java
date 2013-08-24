@@ -28,7 +28,7 @@ import java.lang.String;
 import java.util.Date;
 
 class LM_Listener extends Listener {
-
+    private Hand previous_hand = null;
     private long previous_time;
     private double previous_wristRot;
     private Vector previous_position;
@@ -149,7 +149,7 @@ class LM_Listener extends Listener {
             if(previous_time == 0) dTime = 1000;
             else dTime = (current_time - previous_time)/1000;
            
-            if(dTime < 250) return;
+            if(dTime < 150) return;
             previous_time = current_time;
             total_frame++;
             logger("~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -193,48 +193,87 @@ class LM_Listener extends Listener {
                     f_distance = f_distance - right_size - left_size;
             }
             
-            
 
             if(previous_position != null && wristRot != -99999 
                && previous_fingers_distance != -1){
-               if(Math.abs(pos.distanceTo(previous_position)) 
-                  < MOTION_DISTANCE && Math.abs(wristRot - 
-                  previous_wristRot) < WRISTROT_CHANGE 
-                  && Math.abs(f_distance - previous_fingers_distance) 
-                  < FINGERS_DISTANCE_CHANGE){
+               double dPos = Math.abs(pos.distanceTo(previous_position)); 
+               double dWrot = Math.abs(wristRot - previous_wristRot);
+               double dFin = Math.abs(f_distance - previous_fingers_distance);
+               if(dFin > 30){
+                    logger("Fingers are changing to fast... set to 0");
+                    logger("dFin:", dFin);
+                    dFin = 0;
+               }
+               if(dPos < MOTION_DISTANCE && 
+                  dWrot < WRISTROT_CHANGE && 
+                  dFin < FINGERS_DISTANCE_CHANGE){
                    logger("No Motion...");
-                   logger("Position Distance: ", 
-                           Math.abs(pos.distanceTo(previous_position)),
-                           "Min: ",
-                           MOTION_DISTANCE);
-                   logger("Wrist Distance: ", 
-                           Math.abs(wristRot - previous_wristRot), 
-                           " Min: ",
-                           WRISTROT_CHANGE);
-                   logger("Fingers Distance: ",
-                          Math.abs(f_distance - previous_fingers_distance),
-                           " Min: ",
-                           FINGERS_DISTANCE_CHANGE);
+                   logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
+                   logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
+                   logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
                    no_motion++;
                    return;
+               }else if(dPos > MOTION_DISTANCE &&
+                       dWrot > WRISTROT_CHANGE &&
+                       dFin > FINGERS_DISTANCE_CHANGE){
+                   logger("Motion Dectected...");
+                   motion++;
+                   logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
+                   logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
+                   logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
+                   previous_position = pos;
+                   previous_wristRot = wristRot;
+                   previous_fingers_distance = f_distance;
+               
+               }else if(dPos > MOTION_DISTANCE && dWrot > WRISTROT_CHANGE){
+                   logger("Motion Dectected...");
+                   motion++;
+                   logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
+                   logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
+                   previous_position = pos;
+                   previous_wristRot = wristRot;
+                   //f_distance = previous_fingers_distance;
+               }else if(dPos > MOTION_DISTANCE && dFin > FINGERS_DISTANCE_CHANGE){
+                   logger("Motion Dectected...");
+                   motion++;
+                   logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
+                   logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
+                   previous_position = pos;
+                   previous_fingers_distance = f_distance;
+                   //wristRot = previous_wristRot;
+               }else if(dWrot > WRISTROT_CHANGE && dFin > FINGERS_DISTANCE_CHANGE){
+                   logger("Motion Dectected...");
+                   motion++;
+                   logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
+                   logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
+                   previous_fingers_distance = f_distance;
+                   previous_wristRot = wristRot;
+                   pos = previous_position;
+               }else if(dPos > MOTION_DISTANCE){
+                   logger("Motion Dectected...");
+                   motion++;
+                   logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
+                   previous_position = pos;
+                   //wristRot = previous_wristRot;
+                   //f_distance = previous_fingers_distance;
+               }else if(dWrot > WRISTROT_CHANGE){
+                   logger("Motion Dectected...");
+                   motion++;
+                   logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
+                   previous_wristRot = wristRot;
+                   //f_distance = previous_fingers_distance;
+                   pos = previous_position;
+               }else if(dFin > FINGERS_DISTANCE_CHANGE){
+                   logger("Motion Dectected...");
+                   motion++;
+                   logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
+                   previous_fingers_distance = f_distance;
+                   pos = previous_position;
+                   //wristRot = previous_wristRot;
                }
             }
-            logger("Motion Dectected...");
-            double grip_speed = f_distance - previous_fingers_distance;
-            logger("------------------------");
-            logger("Grip Speed:", grip_speed);
-            logger("------------------------");
-            motion++;
-            if(previous_position != null && pos != null){
-                logger("[Palm Distance] ", Math.abs(pos.distanceTo(previous_position)), "Min: ", MOTION_DISTANCE);
-            }
-            logger("[Finger Distance] Previous: ", previous_fingers_distance,
-                    "Now: ", f_distance, "Min: ", FINGERS_DISTANCE_CHANGE);
-            logger("[Wrist Rot] Previous: ", previous_wristRot,
-                    "Now: ", wristRot, "Min: ", WRISTROT_CHANGE);
-
-            previous_fingers_distance = f_distance; 
             previous_position = pos;
+            previous_fingers_distance = f_distance;
             previous_wristRot = wristRot;
 
             //wrist angle
