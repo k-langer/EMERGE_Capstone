@@ -21,7 +21,7 @@
 #include <errno.h>
 #include <termios.h>
 #include <time.h>
-
+#include "boost/date_time/posix_time/posix_time.hpp"
 #include "mysql_connection.h"
 #include "mysql_driver.h"
 
@@ -30,10 +30,10 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 using namespace std;
-
+namespace pt = boost::posix_time;
 string SERIAL_PORT = "/dev/tty.usbserial-A901G712";
 string BAUD_RATE = "38400";
-unsigned int SLEEP_TIME = 1000; //ten second
+unsigned int SLEEP_TIME = 1; //ten second
 unsigned int INIT_TIME = 10000000; //ten second
 int NO = 0;
 int YES = 1;
@@ -54,6 +54,7 @@ void set_blocking (int fd, int should_block);
 void process_input(int, string);
 string get_time();
 string to_string(int number);
+void get_current_time();
 
 //main
 int main(int argc, const char **argv){
@@ -65,6 +66,7 @@ int main(int argc, const char **argv){
     //open serial port
     int fd = open_port();
     if(fd < 0){
+        get_current_time();
         cout << "Serial port is not open."<<endl;
         return 0;
     }
@@ -73,13 +75,16 @@ int main(int argc, const char **argv){
     set_interface_attribs (fd, B38400, 0);
     //set in/out permission
     set_blocking (fd, NO);
+    get_current_time();
     cout << "Building serial connection with the robot arm."<<endl;
     usleep(INIT_TIME);
+    get_current_time();
     cout << "Serial port connection is open and configured."<<endl;
     try {
         sql::mysql::MySQL_Driver * driver = sql::mysql::get_driver_instance();
         std::auto_ptr< sql::Connection > con(driver->connect(url, user, pass));
         con->setSchema(database);
+        get_current_time();
         cout << "Database is connected."<<endl;
 
         std::auto_ptr< sql::Statement > stmt(con->createStatement());
@@ -101,13 +106,18 @@ int main(int argc, const char **argv){
             while (res->next()) {
                 control_input = res->getString("_message");
                 if(control_input.length() > 0){
+                    get_current_time();
+                    cout << "processing new data..."<< control_input << endl;
                     process_input(fd, control_input);
+                    get_current_time();
+                    cout << "write to serial port...done" << endl;
                 }//else{
                   //  usleep(SLEEP_TIME);
                // }
             }
         }
     } catch (sql::SQLException &e) {
+        get_current_time();
         cout << "# ERR: SQLException in " << __FILE__;
         cout << "# ERR: " << e.what();
         cout << " (MySQL error code: " << e.getErrorCode();
@@ -157,13 +167,15 @@ void process_input(int fd, string input){
         input_error = true;
     }
     if(input_error == false){
-        cout << "[" << get_time() << "] ";
+        get_current_time();
         cout << "passing values to serial port.."<<endl;
         for(int i = 0; i < INPUT_COUNT; i++){
+            get_current_time();
             cout << inputArray[i] << endl;
             toSerialPort(fd, inputArray[i]);
         }
         char response[1] = {'0'};
+        get_current_time();
         cout << "Robot response:"<<endl;
         while(*response != '\t'){
             read (fd, response, sizeof response);
@@ -171,13 +183,13 @@ void process_input(int fd, string input){
                 cout << response[0];
         }
         cout << endl;
-        cout << "received at: [" << get_time() << "] "<<endl;
-        //delay_time = atoi(inputArray[DELAY_INDEX].c_str())+10;
-        //delay_time *= 1000;
-        //cout << "sleeping:" << delay_time << endl;
-        //usleep(delay_time);
+        get_current_time();
+        cout << "received all messages"<<endl;
     }else{
-        cout << "ignore this input: " << input << endl;
+        get_current_time();
+        cout << "[ERROR] ignore this input: " << input << endl;
+        get_current_time();
+        cout << "input length:" <<input.length() << " Max length: "<< INPUT_LENGTH << endl;
     }
 }
 
@@ -266,4 +278,7 @@ void set_blocking (int fd, int should_block){
      return returnvalue;
  }
 
-
+void get_current_time(){
+    pt::ptime current_date_microseconds = pt::microsec_clock::local_time();
+    cout << "[" << current_date_microseconds <<"] ";
+}
