@@ -1,3 +1,5 @@
+*.class
+*.log
 *.pro.user
 *.o
 *.autosave
