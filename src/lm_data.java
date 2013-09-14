@@ -78,10 +78,6 @@ class LM_Listener extends Listener {
 
     public void onConnect(Controller controller) {
         System.out.println("Connected");
-        controller.enableGesture(Gesture.Type.TYPE_SWIPE);
-        controller.enableGesture(Gesture.Type.TYPE_CIRCLE);
-        controller.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
-        controller.enableGesture(Gesture.Type.TYPE_KEY_TAP);
     }
 
     public void onDisconnect(Controller controller) {
@@ -103,15 +99,15 @@ class LM_Listener extends Listener {
         long factor = (long) Math.pow(10, places);
         value = value * factor;
         long tmp = Math.round(value);
-        return (double) tmp / factor;
+        return tmp / (factor + 0.0);
     }
     public String get_current_time(){
         Date d = new Date();
         Timestamp t = new Timestamp(d.getTime());
         return "[" + t.toString() + "] ";
     }
-    public void logger(String msg){
-        System.out.println(get_current_time() + msg);
+    public void logger(String msg) {
+    	System.out.println(get_current_time() + msg); 
     }
     public void logger(String msg, double value){
         System.out.println(get_current_time() + msg + value);
@@ -192,8 +188,6 @@ class LM_Listener extends Listener {
                 if(f_distance != 0) 
                     f_distance = f_distance - right_size - left_size;
             }
-            
-
             if(previous_position != null && wristRot != -99999 
                && previous_fingers_distance != -1){
                double dPos = Math.abs(pos.distanceTo(previous_position)); 
@@ -213,7 +207,7 @@ class LM_Listener extends Listener {
                    logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
                    no_motion++;
                    return;
-               }else if(dPos > MOTION_DISTANCE &&
+               } else if(dPos > MOTION_DISTANCE &&
                        dWrot > WRISTROT_CHANGE &&
                        dFin > FINGERS_DISTANCE_CHANGE){
                    logger("Motion Dectected...");
@@ -225,7 +219,7 @@ class LM_Listener extends Listener {
                    previous_wristRot = wristRot;
                    previous_fingers_distance = f_distance;
                
-               }else if(dPos > MOTION_DISTANCE && dWrot > WRISTROT_CHANGE){
+               } else if(dPos > MOTION_DISTANCE && dWrot > WRISTROT_CHANGE){
                    logger("Motion Dectected...");
                    motion++;
                    logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
@@ -233,7 +227,7 @@ class LM_Listener extends Listener {
                    previous_position = pos;
                    previous_wristRot = wristRot;
                    //f_distance = previous_fingers_distance;
-               }else if(dPos > MOTION_DISTANCE && dFin > FINGERS_DISTANCE_CHANGE){
+               } else if(dPos > MOTION_DISTANCE && dFin > FINGERS_DISTANCE_CHANGE){
                    logger("Motion Dectected...");
                    motion++;
                    logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
@@ -241,7 +235,7 @@ class LM_Listener extends Listener {
                    previous_position = pos;
                    previous_fingers_distance = f_distance;
                    //wristRot = previous_wristRot;
-               }else if(dWrot > WRISTROT_CHANGE && dFin > FINGERS_DISTANCE_CHANGE){
+               } else if(dWrot > WRISTROT_CHANGE && dFin > FINGERS_DISTANCE_CHANGE){
                    logger("Motion Dectected...");
                    motion++;
                    logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
@@ -249,21 +243,21 @@ class LM_Listener extends Listener {
                    previous_fingers_distance = f_distance;
                    previous_wristRot = wristRot;
                    pos = previous_position;
-               }else if(dPos > MOTION_DISTANCE){
+               } else if(dPos > MOTION_DISTANCE){
                    logger("Motion Dectected...");
                    motion++;
                    logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
                    previous_position = pos;
                    //wristRot = previous_wristRot;
                    //f_distance = previous_fingers_distance;
-               }else if(dWrot > WRISTROT_CHANGE){
+               } else if(dWrot > WRISTROT_CHANGE){
                    logger("Motion Dectected...");
                    motion++;
                    logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
                    previous_wristRot = wristRot;
                    //f_distance = previous_fingers_distance;
                    pos = previous_position;
-               }else if(dFin > FINGERS_DISTANCE_CHANGE){
+               } else if(dFin > FINGERS_DISTANCE_CHANGE){
                    logger("Motion Dectected...");
                    motion++;
                    logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
@@ -311,6 +305,5 @@ class LM_DATA {
         // Have the sample listener receive events from the controller
         controller.addListener(listener);
         while(true){}
-
     }
 }
