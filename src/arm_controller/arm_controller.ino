@@ -161,8 +161,8 @@ void setup() {
   // Read in the current positions...
   bioloid.readPose();
   
-  // Start off to put arm to sleep...
-  PutArmToSleep();
+  // Start off to put arm to home position...
+  MoveArmTo(512, 212, 212, 852, 512, 256, sDeltaTime, true);
 
   MSound(3, 60, 2000, 80, 2250, 900, 2500);
   Serial.println("MSound execute");
@@ -219,18 +219,11 @@ void sleep(int t){
 //MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, int sGrip, int wTime, boolean fWait)
 // MoveArmTo(512, 212, 212, 512, 512, 256, sDeltaTime, true); 
 void loop(){
-  //00 sleep
   //01 home position
   //02 torque on
   //03 perform action
   int action = getInputValue(2, false);
-  if(action == 0){
-     Serial.print("Sleep");
-     getInputValue(23, false);
-     PutArmToSleep();
-     MSound(3, 60, 2000, 80, 2250, 900, 2500);
-     Serial.println('\t');
-  }else if(action == 1){
+  if(action == 1){
     Serial.print("Home");
     getInputValue(23, false);
     MoveArmToHome();
@@ -411,7 +404,7 @@ void MoveArmToHome(void) {
 //===================================================================================================
 void PutArmToSleep(void) {
   g_fArmActive = false;
-  MoveArmTo(512, 212, 212, 512, 512, 256, sDeltaTime, true);
+  MoveArmTo(512, 212, 412, 352, 512, 256, sDeltaTime, true);
 
   // And Relax all of the servos...
   for(uint8_t i=1; i <= CNT_SERVOS; i++) {
