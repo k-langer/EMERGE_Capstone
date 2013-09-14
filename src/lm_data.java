@@ -130,6 +130,11 @@ class LM_Listener extends Listener {
     public void logger(String msg, int value){
         System.out.println(get_current_time() + msg + value);
     }
+    double xpos = 0;
+    double ypos = 0; 
+    double zpos = 0; 
+    double wrot = 0; 
+    double wang = 0;   
     public void onFrame(Controller controller) {
         // Get the most recent frame and report some basic information
         Frame frame = controller.frame();
@@ -275,11 +280,17 @@ class LM_Listener extends Listener {
 
             //compose input string
             int precision = 5;
-            String result = "03 " + round(0 - pos.getZ(), precision) + " " + 
-                            round(0 - pos.getX(), precision) + " " + 
-                            round(pos.getY(), precision) + " " + 
-                            round(wristAngle, precision) + " " + 
-                            round(wristRot, precision) + " " + 
+	    xpos = exp_avg(0 - pos.getX(), xpos); 
+	    ypos = exp_avg(0 - pos.getY(), ypos); 
+	    zpos = exp_avg(0 - pos.getZ(), zpos); 
+	    wang = exp_avg(wristAngle, wang); 
+	    wrot = exp_avg(wristRot, wrot); 
+	
+	    String result = "03 " + round(zpos, precision) + " " + 
+                            round(xpos, precision) + " " + 
+                            round(ypos, precision) + " " + 
+                            round(wang, precision) + " " + 
+                            round(wrot, precision) + " " + 
                             dTime + " 1 " + round(f_distance, 5);
             logger("Insert data: " + result);
             String query = "insert into xyz values(Default,'" + result + "');";
@@ -293,6 +304,12 @@ class LM_Listener extends Listener {
         }catch(SQLException ex){
             System.out.println(ex.getMessage());
         }
+    } 
+    private double alpha = 0.2961;
+    public double exp_avg(double value, double oldValue) {
+	double newValue = oldValue + alpha * (value - oldValue);
+	oldValue = newValue; 
+	return newValue; 
     }
 }
 
