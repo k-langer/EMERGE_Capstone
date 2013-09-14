@@ -281,7 +281,7 @@ class LM_Listener extends Listener {
             //compose input string
             int precision = 5;
 	    xpos = exp_avg(0 - pos.getX(), xpos); 
-	    ypos = exp_avg(0 - pos.getY(), ypos); 
+	    ypos = exp_avg(pos.getY(), ypos); 
 	    zpos = exp_avg(0 - pos.getZ(), zpos); 
 	    wang = exp_avg(wristAngle, wang); 
 	    wrot = exp_avg(wristRot, wrot); 
