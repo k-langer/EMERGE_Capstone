@@ -1,0 +1,13 @@
+Libaries used by the sample programs and should be updated for compiling many leap programs: 
+	sudo apt-get update
+	sudo apt-get install g++ libGL-dev libGLU-dev libX11-dev libXi-dev \
+       libfreetype6-dev libxinerama-dev libxcursor-dev libasound-dev
+Set linking path: 
+	LD_LIBRARY_PATH=../lib/x64 ./$(NAME)
+Compile:
+	g++ -Wall -g -I../include $(NAME).cpp -o $(NAME) $(LEAP_LIBRARY)
+	NOTE: ../include should have Leap.h and LeapMath.h if you are using it
+	NOTE: $(LEAP_LIBRARY) is LibLeap.so, it has to match your computer's arch. In all cases should be AMDx64 and the path should be ../lib/x64/libLeap.so
+Run:
+	cp ../lib/x64/libLeap.so .
+	With libLeap copied in the same folder as the compiled application simply run your compiled app. 

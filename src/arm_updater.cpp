@@ -12,9 +12,9 @@
   *  LD_LIBRARY_PATH=/usr/local/lib/ ./a.out host user password database
   *
   */
-
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <iomanip>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <math.h>
@@ -33,6 +33,8 @@
 using namespace std;
 namespace pt = boost::posix_time;
 
+string SIMULATE_FILE = "/Users/zhenhangjiang/Documents/MATLAB/test/test";
+bool SIMULATE = false;
 double SHOULDER_LENGTH = 146.5;
 double ELBOW_LENGTH = 146.5;
 double WRIST_LENGTH = 100.0;
@@ -45,8 +47,8 @@ double BASE_MAX_ANGLE = 90.0;
 
 int SHOULDER_MIN = 210;
 int SHOULDER_MAX = 810;
-double SHOULDER_MIN_ANGLE = 0.0;
-double SHOULDER_MAX_ANGLE = 180.0;
+double SHOULDER_MIN_ANGLE = 0;
+double SHOULDER_MAX_ANGLE = 180;
 
 int ELBOW_MIN = 215;
 int ELBOW_MAX = 825;
@@ -73,20 +75,18 @@ int XYZ_INPUT_COUNT = 9;
 int COMMAND_INPUT_LENGTH = 51;
 
 double PRECISION = 0.0000000001;
+
 #define EXAMPLE_HOST "localhost"
 #define EXAMPLE_USER "zhen"
 #define EXAMPLE_PASS "Zhenjiang#1"
 #define EXAMPLE_DB "capstone"
-struct Cartesian{
-        double x, y, z;
-};
+#define CONTROLLING_DISABLE "99"
 
-struct ArmAngle{
-    double base, shoulder, elbow, wrist, wristRot, grip;
-};
+struct Cartesian{ double x, y, z; };
+struct ArmAngle{ double base, shoulder, elbow, wrist, wristRot, grip; };
+struct ArmXYZ{ Cartesian base, shoulder, elbow, tip; };
 
-ArmAngle to_armangle(Cartesian, double, double, double);
-
+ArmAngle to_armangle(Cartesian, double, double, double, ArmXYZ&);
 string get_base(double);
 string get_shoulder(double);
 string get_elbow(double);
@@ -100,8 +100,9 @@ string input_composite(ArmAngle, int wTime, int fWait);
 Cartesian to_cart(ArmAngle);
 double normalize(double);
 void get_current_time();
-int main(int argc, const char **argv){
+void logger(string);
 
+int main(int argc, const char **argv){
     Cartesian c;
     string url(argc >= 2 ? argv[1] : EXAMPLE_HOST);
     const string user(argc >= 3 ? argv[2] : EXAMPLE_USER);
@@ -116,8 +117,7 @@ int main(int argc, const char **argv){
         sql::mysql::MySQL_Driver * driver = sql::mysql::get_driver_instance();
         std::auto_ptr< sql::Connection > con(driver->connect(url, user, pass));
         con->setSchema(database);
-        get_current_time();
-        cout << "Database is connected."<<endl;
+        logger("Database is connected");
         
         std::auto_ptr< sql::Statement > stmt(con->createStatement());
         std::auto_ptr< sql::ResultSet > res;
@@ -125,6 +125,12 @@ int main(int argc, const char **argv){
         int successful = 0;
         int no_solution = 0;
         string tmp;
+        int file_counter = 0;
+        bool tracking_lost = true;
+        Cartesian prev;
+        prev.x = 0;
+        prev.y = 0;
+        prev.z = 20;
         while(1){
             stmt->execute("CALL get_xyz(@rs)"); 
             
@@ -135,28 +141,37 @@ int main(int argc, const char **argv){
             }
             if(tmp.length() == 0) continue;
 
-            get_current_time();
-            cout << "Data available..." << endl;
+            logger("Data available...");
             total += 1;    
             if(strs.size() != XYZ_INPUT_COUNT){
-                get_current_time();
-                cout << "Ignore this bad input:"<< emerge(strs, ' ') << endl;
+                logger("Ignore this bad input:" + emerge(strs, ' '));
                 continue;
             }
-            get_current_time();
-            cout << "processing input:" << emerge(strs, ' ') << endl;
-
-
+            logger("processing input:" + emerge(strs, ' '));
             command_str = strs[0];
-            c.x = atof(strs[1].c_str());
+            if(command_str == CONTROLLING_DISABLE) {
+                logger("Controlling is not enabled!");
+                continue;
+            }
+
+            c.x = atof(strs[1].c_str()) + 200;
             c.y = atof(strs[2].c_str());
-            c.z = atof(strs[3].c_str());
+            c.z = atof(strs[3].c_str()) - 250;
             wristAngle = atof(strs[4].c_str());
             wristRotAngle = atof(strs[5].c_str());
             gripAngle = atof(strs[8].c_str());
-            speed = atoi(strs[6].c_str());
+            double proper_speed = 0.2;
+            if(tracking_lost){
+                double dis = sqrt(pow(c.x - prev.x, 2) + 
+                                  pow(c.y - prev.y, 2) +
+                                  pow(c.z - prev.z, 2)); 
+                speed = dis / proper_speed;
+            }
+            else speed = atoi(strs[6].c_str());
             fWait = atoi(strs[7].c_str());
-            angles = to_armangle(c, wristAngle, wristRotAngle, gripAngle);
+            ArmXYZ arm_xyz;
+            angles = to_armangle(c, wristAngle, 
+                                 wristRotAngle, gripAngle, arm_xyz);
             input_string = "CALL add_input('";
             input_string += command_str;
             input_string += " "; 
@@ -164,21 +179,23 @@ int main(int argc, const char **argv){
             input_string += "')";
             if(angles.shoulder == -9999999) no_solution++;
             if(input_string.length() == COMMAND_INPUT_LENGTH){
-                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
-                get_current_time();
-                cout << "Successful: " << input_string << endl;
-                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+                logger("Successful: " + input_string);
                 stmt->execute(input_string);
                 successful += 1;
+                tracking_lost = false;
+                prev.x = c.x;
+                prev.y = c.y;
+                prev.z = c.z;
             }else{
-                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
-                get_current_time();
-                cout << "Input ignore..."<< input_string << endl;
-                cout << "Input Length:" << input_string.length() <<endl;
-                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+                logger("Input ignore..." + input_string);
+                logger("Input Length:" + to_string(input_string.length()));
+                tracking_lost = true;
             }
             get_current_time();
-            cout << "*******Rate:" << (double)successful/(double)total * 100 <<"% Sucessful:" << successful << " no_solution:" << no_solution << " total:" << total << "*****************"<<endl;
+            cout << "Rate:" << (double)successful/(double)total * 100 
+                 << "% Sucessful:" << successful 
+                 << " no_solution:" << no_solution 
+                 << " total:" << total << endl;
         }
 
         
@@ -220,11 +237,22 @@ string input_composite(ArmAngle angles, int wTime, int fWait){
 }
 Cartesian to_cart(ArmAngle arm){
     Cartesian c;
+    return c;
 }
 
-ArmAngle to_armangle(Cartesian c, double wristAngle, double wristRotAngle, double grip){
-    cout << "~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+ArmAngle to_armangle(Cartesian c, double wristAngle, 
+                     double wristRotAngle, double grip, ArmXYZ& arm_xyz){
+    arm_xyz.tip.x = c.x;
+    arm_xyz.tip.y = c.y;
+    arm_xyz.tip.z = c.z;
+    arm_xyz.base.x = 0;
+    arm_xyz.base.y = 0;
+    arm_xyz.base.z = 0;
+
+    get_current_time();
+    cout << "x:" << c.x << " y:"<< c.y << " z:" << c.z << endl;
     wristAngle = wristAngle * PI / 180;
+    get_current_time();
     cout << "wrist angle:" << wristAngle << endl;
     ArmAngle angles;
     angles.wristRot = wristRotAngle;
@@ -232,25 +260,37 @@ ArmAngle to_armangle(Cartesian c, double wristAngle, double wristRotAngle, doubl
     
     //calculate the base and turn them into 2d plane problem
     angles.base = atan2(c.y, c.x);
+    get_current_time();
     cout << "base:" << angles.base << endl;
     double axis_y = c.z;
-    double axis_x = sqrt(pow(c.y, 2.0) + pow(c.x, 2.0));
+    double axis_x = sqrt(c.y * c.y + c.x * c.x);
+    get_current_time();
     cout << "new y:" << axis_y << endl;
+    get_current_time();
     cout << "new x:" << axis_x << endl;
     
     //now we can work on 2d plane
     double elbow_x = axis_x - WRIST_LENGTH * cos(wristAngle);
     double elbow_y = axis_y - WRIST_LENGTH * sin(wristAngle);
+    
+    arm_xyz.elbow.z = elbow_y;
+    arm_xyz.elbow.x = elbow_x * cos(angles.base);
+    arm_xyz.elbow.y = elbow_x * sin(angles.base);
+
+    get_current_time();
     cout << "elbow_x:" << elbow_x << endl;
+    get_current_time();
     cout << "elbow_y:" << elbow_y << endl;
 
     //diagonal shoulder and elbow
     double dse = sqrt(pow(elbow_x, 2.0) + pow(elbow_y, 2.0));
-    cout << "dse" << dse << endl;
 
     if(dse > SHOULDER_LENGTH + ELBOW_LENGTH){
+        get_current_time();
         cout << "no solution" << endl; 
+        get_current_time();
         cout << "SHOULDER_LENGTH:" << SHOULDER_LENGTH<<endl;
+        get_current_time();
         cout << "ELBOW_LENGTH:" << ELBOW_LENGTH <<endl;
         angles.shoulder = -9999999;
         angles.elbow = -99999999;
@@ -265,20 +305,32 @@ ArmAngle to_armangle(Cartesian c, double wristAngle, double wristRotAngle, doubl
     
     //acos(1) == NaN causing problem
     if(abs((int)(temp/temp2)) == 1) angles.elbow = 0;
-    else angles.elbow = atan2(sqrt(pow(temp2, 2) - pow(temp, 2)), temp) * 180 / PI;
-    temp = normalize(pow(SHOULDER_LENGTH, 2.0) + pow(dse, 2.0) - pow(ELBOW_LENGTH, 2.0));
+    else angles.elbow = atan2(sqrt(pow(temp2, 2) - 
+                        pow(temp, 2)), temp) * 180 / PI;
+    temp = normalize(pow(SHOULDER_LENGTH, 2.0) + 
+           pow(dse, 2.0) - pow(ELBOW_LENGTH, 2.0));
     temp2 =  (2*SHOULDER_LENGTH*dse);
     angles.shoulder = atan2(sqrt(pow(temp2, 2) - pow(temp, 2)), temp);
-    cout << "shoulder1:"<< angles.shoulder<<endl; 
     angles.shoulder += atan2(elbow_y, elbow_x);
-    cout << "shoulder2:"<< angles.shoulder<<endl; 
+
+    arm_xyz.shoulder.z = SHOULDER_LENGTH*sin(angles.shoulder);
+    temp = SHOULDER_LENGTH*cos(angles.shoulder);
+    arm_xyz.shoulder.x = temp*cos(angles.base);
+    arm_xyz.shoulder.y = temp*sin(angles.base);
+
     angles.base *= 180 / PI;
     angles.shoulder *= 180 / PI;
-    angles.wrist = wristAngle * 180 / PI + 180 - angles.elbow - angles.shoulder;
+    angles.wrist = wristAngle * 180 / PI + 180 
+                   - angles.elbow - angles.shoulder;
+    get_current_time();
     cout << "elbow:"<<angles.elbow<<endl;
+    get_current_time();
     cout << "shoulder:"<< angles.shoulder<<endl; 
+    get_current_time();
     cout << "wrist: " << angles.wrist << endl;
+    get_current_time();
     cout << "Grip: " << angles.grip << endl;
+
     return angles;
 }
 string get_base(double angle){
@@ -286,7 +338,10 @@ string get_base(double angle){
     double rate = (BASE_MAX - BASE_MIN)/(BASE_MAX_ANGLE - BASE_MIN_ANGLE);
     int amount = rate * (angle - BASE_MIN_ANGLE) + BASE_MIN;
     if(amount > BASE_MAX || amount < BASE_MIN){
-        cout << "base amount:" << amount << " Max:"<<BASE_MAX << " Min:" << BASE_MIN<< endl;
+        get_current_time();
+        cout << "base amount:" << amount 
+             << " Max:"<<BASE_MAX 
+             << " Min:" << BASE_MIN<< endl;
         return "";
     }
     string result = to_string(amount);
@@ -300,7 +355,9 @@ string get_shoulder(double angle){
                   /(SHOULDER_MAX_ANGLE - SHOULDER_MIN_ANGLE);
     int amount = SHOULDER_MAX - rate * angle;
     if(amount > SHOULDER_MAX || amount < SHOULDER_MIN){
-        cout << "Shoulder amount:" << amount << " Max:" << SHOULDER_MAX << " Min:" << SHOULDER_MIN <<endl;
+        cout << "Shoulder amount:" << amount 
+             << " Max:" << SHOULDER_MAX 
+             << " Min:" << SHOULDER_MIN <<endl;
         return "";
     }
     string result = to_string(amount);
@@ -313,7 +370,10 @@ string get_elbow(double angle){
     double rate = (ELBOW_MAX - ELBOW_MIN)/(ELBOW_MAX_ANGLE - ELBOW_MIN_ANGLE);
     int amount = ELBOW_MIN + rate * angle;
     if(amount > ELBOW_MAX || amount < ELBOW_MIN){
-        cout << "Elbow amount:" << amount << " Max:" << ELBOW_MAX << " Min:" << ELBOW_MIN << endl;
+        get_current_time();
+        cout << "Elbow amount:" << amount 
+             << " Max:" << ELBOW_MAX 
+             << " Min:" << ELBOW_MIN << endl;
         return "";
     }
     string result = to_string(amount);
@@ -326,7 +386,10 @@ string get_wrist(double angle){
     double rate = (WRIST_MAX - WRIST_MIN)/(WRIST_MAX_ANGLE - WRIST_MIN_ANGLE);
     int amount = rate * (angle - WRIST_MIN_ANGLE) + WRIST_MIN;
     if(amount > WRIST_MAX || amount < WRIST_MIN) {
-        cout << "Wrist amount:" << amount << " Max:" << WRIST_MAX << " Min:" << WRIST_MIN << endl;
+        get_current_time();
+        cout << "Wrist amount:" << amount 
+             << " Max:" << WRIST_MAX 
+             << " Min:" << WRIST_MIN << endl;
         return "";
     }
     string result = to_string(amount);
@@ -354,7 +417,10 @@ string get_grip(double length){
     double rate = (GRIP_MAX - GRIP_MIN)/(GRIP_MAX_LENGTH - GRIP_MIN_LENGTH);
     amount = length * rate;
     if(amount > GRIP_MAX || amount < GRIP_MIN) {
-        cout << "Grip amout: " << amount << " Max:" << GRIP_MAX << " Min:" << GRIP_MIN << endl;   
+        get_current_time();
+        cout << "Grip amout: " << amount 
+             << " Max:" << GRIP_MAX 
+             << " Min:" << GRIP_MIN << endl;   
         return "";
     }
     string result = to_string(amount);
@@ -365,14 +431,14 @@ string get_grip(double length){
 }
 string to_string(int number){
     if (number == 0) return "0";
-    string temp="";
-    string returnvalue="";
+    string temp = "";
+    string returnvalue = "";
     while (number>0){
-        temp+=number%10+48;
-        number/=10;   
+        temp += number % 10 + 48;
+        number /= 10;   
     }
-    for (int i=0;i<temp.length();i++)
-        returnvalue+=temp[temp.length()-i-1];        
+    for (int i = 0; i < temp.length(); i++)
+        returnvalue += temp[temp.length()-i-1];        
     return returnvalue;
 }
 
@@ -411,4 +477,8 @@ double normalize(double n){
 void get_current_time(){
     pt::ptime current_date_microseconds = pt::microsec_clock::local_time();
     cout << "[" << current_date_microseconds <<"] ";
+}
+void logger(string msg){
+   get_current_time();
+   cout << msg << endl;
 }

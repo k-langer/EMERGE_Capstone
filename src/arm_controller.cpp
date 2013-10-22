@@ -59,10 +59,10 @@ void get_current_time();
 //main
 int main(int argc, const char **argv){
     string control_input;
-    string url(argc >= 2 ? argv[1] : EXAMPLE_HOST);
-    const string user(argc >= 3 ? argv[2] : EXAMPLE_USER);
-    const string pass(argc >= 4 ? argv[3] : EXAMPLE_PASS);
-    const string database(argc >= 5 ? argv[4] : EXAMPLE_DB);
+    string url(EXAMPLE_HOST);
+    const string user(EXAMPLE_USER);
+    const string pass(EXAMPLE_PASS);
+    const string database(EXAMPLE_DB);
     //open serial port
     int fd = open_port();
     if(fd < 0){
@@ -90,14 +90,13 @@ int main(int argc, const char **argv){
         std::auto_ptr< sql::Statement > stmt(con->createStatement());
         stmt->execute("CALL get_new_data(@rs)");
 
-        std::auto_ptr< sql::ResultSet > res(stmt->executeQuery("SELECT @rs AS _message"));
+        std::auto_ptr< sql::ResultSet > 
+            res(stmt->executeQuery("SELECT @rs AS _message"));
 		
         while (res->next()) {
             control_input = res->getString("_message");
             if(control_input.length() > 0){
                 process_input(fd, control_input);
-            }else{
-                usleep(SLEEP_TIME);
             }
         }
         while(1){
@@ -111,9 +110,7 @@ int main(int argc, const char **argv){
                     process_input(fd, control_input);
                     get_current_time();
                     cout << "write to serial port...done" << endl;
-                }//else{
-                  //  usleep(SLEEP_TIME);
-               // }
+                }
             }
         }
     } catch (sql::SQLException &e) {

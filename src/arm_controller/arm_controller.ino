@@ -251,7 +251,6 @@ void loop(){
        ifWait = true; 
     }
     //waitTime = sDeltaTime;
-    Serial.println(' ');
     Serial.println(base);
     Serial.println(' ');
     Serial.println(shoulder);
@@ -272,71 +271,6 @@ void loop(){
     Serial.println('\t');   
   } 
 }
-/*void loop() {
-  boolean fChanged = false;
-   
-  if (armcontrol.ReadMsgs()) {
-  
-    digitalWrite(0,HIGH-digitalRead(0));    
-    // See if the Arm is active yet...
-    if (g_fArmActive) {
-     
-      
-      sBase = g_sBase;
-      sShoulder = g_sShoulder;
-      sElbow = g_sElbow; 
-      sWrist = g_sWrist;
-      sWristRot = g_sWristRot;      
-      sGrip = g_sGrip;
-      
-
-// Call ProcessUserInput3D
-
-       fChanged |= ProcessUserInput3D();
-
-
-      // If something changed and we are not in an error condition
-      if (fChanged && (g_bIKStatus != IKS_ERROR)) {
-        MoveArmTo(sBase, sShoulder, sElbow, sWrist, sWristRot, sGrip, sDeltaTime, true);
-      }
-      else if (bioloid.interpolating > 0) {
-        bioloid.interpolateStep();
-      }
-    }
-    else {
-      g_fArmActive = true;
-//      MoveArmToHome();      
-    }
-
-//    buttonsPrev = armcontrol.buttons;
-    ulLastMsgTime = millis();    // remember when we last got a message...
-  }
-  else {
-    if (bioloid.interpolating > 0) {
-      bioloid.interpolateStep();
-    }
-    // error see if we exceeded a timeout
-    if (g_fArmActive && ((millis() - ulLastMsgTime) > ARBOTIX_TO)) {
-      //lcd.clear();
-      //lcd.setCursor(0, 0);    
-      //lcd.print("Good bye. :(");
-      PutArmToSleep();
-    
-    
-    }
-  }
-} */
-
-
-
-
-
-
-
-
-
-
-
 
 //===================================================================================================
 // ProcessUserInput3D: Process the Userinput when we are in 3d Mode
@@ -703,37 +637,3 @@ void MSound(byte cNotes, ...)
 {
 };
 #endif
-
-
-//g_sIKX, etc global variables are the old previous value. changing to "local"
-//
-//void LCD(){
-//    lcd.setCursor(0, 0);    
-//    lcd.print(g_sIKX);    
-//    lcd.setCursor(4, 0);    
-//    lcd.print(g_sIKY);      
-//    lcd.setCursor(8, 0);    
-//    lcd.print(g_sIKZ);    
-//    lcd.setCursor(12, 0);    
-//    lcd.print(g_sIKGA);
-//    lcd.setCursor(0, 1);    
-//    lcd.print(g_sWristRot);    
-//    lcd.setCursor(4, 1);    
-//    lcd.print(g_sGrip); 
-//}
-
-
-/*void LCD(int IKX, int IKY, int IKZ, int IKGA, int WristRot, int Gripper){
-    lcd.setCursor(0, 0);    
-    lcd.print(IKX);    
-    lcd.setCursor(4, 0);    
-    lcd.print(IKY);      
-    lcd.setCursor(8, 0);    
-    lcd.print(IKZ);    
-    lcd.setCursor(12, 0);    
-    lcd.print(IKGA);
-    lcd.setCursor(0, 1);    
-    lcd.print(WristRot);    
-    lcd.setCursor(8, 1);    
-    lcd.print(Gripper); 
-}*/
