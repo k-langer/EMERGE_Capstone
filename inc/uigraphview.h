@@ -12,15 +12,17 @@ public:
     UIGraphView();
     ~UIGraphView();
 
+    void addSphere( const QVector3D vector, const double diameter = 1.0f );
+    void addCylinder( const QVector3D vector1, const QVector3D vector2, const double diameter = 1.0f );
+
+    void reset();
+
 protected:
     void paintGL( QGLPainter *painter );
     void initializeGL( QGLPainter *painter );
 
 private:
     std::vector<QGLSceneNode*> * nodes;
-
-    void addSphere( const QVector3D vector, const double diameter = 1.0f );
-    void addCylinder( const QVector3D vector1, const QVector3D vector2, const double diameter = 1.0f );
 
     static QGLSceneNode * generateSphere( const QVector3D vector, const double diameter = 1.0f );
     static QGLSceneNode * generateCylinder( const QVector3D vector1, const QVector3D vector2, const double diameter = 1.0f );

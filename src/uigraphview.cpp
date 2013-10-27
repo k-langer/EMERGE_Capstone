@@ -9,14 +9,6 @@
 UIGraphView::UIGraphView() : QGLView()
 {
     this->nodes = new std::vector<QGLSceneNode*>;
-
-    // Testing - draws 2 spheres connected by a cylinder
-    QVector3D sphere1Point = QVector3D(.4,-.5, 0 );
-    QVector3D sphere2Point = QVector3D( -.6, .43, .2 );
-
-    this->addSphere( sphere1Point, 0.3f );
-    this->addSphere( sphere2Point, 0.3f );
-    this->addCylinder( sphere1Point, sphere2Point, 0.1f );
 }
 
 UIGraphView::~UIGraphView()
@@ -97,4 +89,10 @@ QGLSceneNode * UIGraphView::generateCylinder( const QVector3D vector1, const QVe
     cylinder->addTransform( translation );
 
     return cylinder;
+}
+
+void UIGraphView::reset()
+{
+    this->nodes->clear();
+    this->update();
 }

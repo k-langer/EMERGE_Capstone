@@ -22,4 +22,5 @@ HEADERS  += mainwindow.h \
     inc/uimainwindow.h \
     inc/uigraphview.h \
     inc/uicameraview.h \
-    inc/uiutil.h
+    inc/uiutil.h \
+    inc/uirobot.h

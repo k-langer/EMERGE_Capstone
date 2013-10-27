@@ -14,6 +14,7 @@
 #include <vector>
 #include "inc/uigraphview.h"
 #include "inc/uicameraview.h"
+#include "inc/uirobot.h"
 
 enum status_t {
     NOT_CONNECTED,
@@ -33,6 +34,8 @@ public:
 
     void setStatus( status_t );
     status_t getStatus();
+
+    void setRobotPosition( UIRobot robotPosition );
 
 private:
     // Private members

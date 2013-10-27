@@ -129,3 +129,16 @@ void UIMainWindow::_setupStatisticGrid()
         statisticGrid->addWidget( label, row, col, 1, 1 );
     }
 }
+
+void UIMainWindow::setRobotPosition( UIRobot robotPosition )
+{
+    this->robotGraphView->reset();
+
+    this->robotGraphView->addSphere( robotPosition.base, .8 );
+    this->robotGraphView->addCylinder( robotPosition.base, robotPosition.shoulder, .1 );
+    this->robotGraphView->addSphere( robotPosition.shoulder, .5 );
+    this->robotGraphView->addCylinder( robotPosition.shoulder, robotPosition.wrist, .1 );
+    this->robotGraphView->addSphere( robotPosition.wrist, .5 );
+    this->robotGraphView->addCylinder( robotPosition.wrist, robotPosition.centerGripper, .1);
+    this->robotGraphView->addSphere( robotPosition.centerGripper, .5 );
+}
