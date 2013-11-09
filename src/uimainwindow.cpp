@@ -5,6 +5,8 @@
 #include <QMenuBar>
 #include <QStatusBar>
 
+#define STATISTICS_PRECISION 3
+
 UIMainWindow::UIMainWindow( QWidget *parent )
     : QMainWindow( parent )
 {
@@ -32,11 +34,6 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     robotGraphContainer->setMaximumSize(1000,1000);
     this->gridLayout->addWidget( robotGraphContainer, 0, 5, 2, 1 );
 
-    // Robot type label setup
-    this->robotTypeLabel = new QLabel( "PhantomX Reactor" );
-    this->robotTypeLabel->setStyleSheet( "QLabel {font:bold large;}" );
-    this->gridLayout->addWidget( this->robotTypeLabel, 4, 0, 1, 1 );
-
     this->_setupStatisticGrid();
 
     QWidget *window = new QWidget();
@@ -44,14 +41,13 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     this->setCentralWidget( window );
 
     // Maximize at start
-//    this->showMaximized();
+    this->showMaximized();
 }
 
 UIMainWindow::~UIMainWindow()
 {
     delete statusBarLabel;
     delete gridLayout;
-    delete robotTypeLabel;
     delete robotGraphView;
     delete cameraView;
 }
@@ -64,11 +60,6 @@ void UIMainWindow::setStatus( status_t newStatus )
     case NOT_CONNECTED:
         this->statusBarLabel->setText( "Not connected" );
         this->statusBarLabel->setStyleSheet( "QLabel {color:red;}" );
-        break;
-
-    case READY_FOR_CALIBRATION:
-        this->statusBarLabel->setText( "Ready for calibration" );
-        this->statusBarLabel->setStyleSheet( "QLabel {color:orange;}" );
         break;
 
     case CONNECTED:
@@ -99,18 +90,22 @@ void UIMainWindow::_setupStatisticGrid()
     this->statisticLabels = std::vector<QLabel*>();
 
     // Setup labels
-    QLabel *userX = new QLabel( "Base: " );
-    statisticGrid->addWidget( userX, 0, 0, 1, 1 );
-    QLabel *userY = new QLabel( "Shoulder: " );
-    statisticGrid->addWidget( userY, 1, 0, 1, 1 );
-    QLabel *userZ = new QLabel( "Wrist: " );
-    statisticGrid->addWidget( userZ, 2, 0, 1, 1 );
-    QLabel *robotX = new QLabel( "Gripper: " );
-    statisticGrid->addWidget( robotX, 3, 0, 1, 1 );
+    QLabel *baseLabel = new QLabel( "Base: " );
+    baseLabel->setStyleSheet( "QLabel {font:bold;}" );
+    statisticGrid->addWidget( baseLabel, 0, 0, 1, 1 );
+    QLabel *shoulderLabel = new QLabel( "Shoulder: " );
+    shoulderLabel->setStyleSheet( "QLabel {font:bold;}" );
+    statisticGrid->addWidget( shoulderLabel, 1, 0, 1, 1 );
+    QLabel *wristLabel = new QLabel( "Wrist: " );
+    wristLabel->setStyleSheet( "QLabel {font:bold;}" );
+    statisticGrid->addWidget( wristLabel, 2, 0, 1, 1 );
+    QLabel *gripperLabel = new QLabel( "Gripper: " );
+    gripperLabel->setStyleSheet( "QLabel {font:bold;}" );
+    statisticGrid->addWidget( gripperLabel, 3, 0, 1, 1 );
 
     // Setup value labels
     for( int i = 0; i < 12; i++ ) {
-        QLabel *label = new QLabel( QString::number(0) );
+        QLabel *label = new QLabel( QString::number(0.0000, 'f', STATISTICS_PRECISION) );
         int row = i / 3;
         int col = i % 3 + 1;
         this->statisticLabels.push_back( label );
@@ -124,35 +119,35 @@ void UIMainWindow::_setStatisticsWithRobotPosition( UIRobot robotPosition )
 
     // Base
     label = this->statisticLabels[0];
-    label->setText( QString::number(robotPosition.base.x(), 'f', 3) );
+    label->setText( QString::number(robotPosition.base.x(), 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[1];
-    label->setText( QString::number(robotPosition.base.y(), 'f', 3) );
+    label->setText( QString::number(robotPosition.base.y(), 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[2];
-    label->setText( QString::number(robotPosition.base.z(), 'f', 3) );
+    label->setText( QString::number(robotPosition.base.z(), 'f', STATISTICS_PRECISION) );
 
     // Shoulder
     label = this->statisticLabels[3];
-    label->setText( QString::number(robotPosition.shoulder.x(), 'f', 3) );
+    label->setText( QString::number(robotPosition.shoulder.x(), 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[4];
-    label->setText( QString::number(robotPosition.shoulder.y(), 'f', 3) );
+    label->setText( QString::number(robotPosition.shoulder.y(), 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[5];
-    label->setText( QString::number(robotPosition.shoulder.z(), 'f', 3) );
+    label->setText( QString::number(robotPosition.shoulder.z(), 'f', STATISTICS_PRECISION) );
 
     // Wrist
     label = this->statisticLabels[6];
-    label->setText( QString::number(robotPosition.wrist.x(), 'f', 3) );
+    label->setText( QString::number(robotPosition.wrist.x(), 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[7];
-    label->setText( QString::number(robotPosition.wrist.y(), 'f', 3) );
+    label->setText( QString::number(robotPosition.wrist.y(), 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[8];
-    label->setText( QString::number(robotPosition.wrist.z(), 'f', 3) );
+    label->setText( QString::number(robotPosition.wrist.z(), 'f', STATISTICS_PRECISION) );
 
     // Gripper
     label = this->statisticLabels[9];
-    label->setText( QString::number(robotPosition.centerGripper.x(), 'f', 3) );
+    label->setText( QString::number(robotPosition.centerGripper.x(), 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[10];
-    label->setText( QString::number(robotPosition.centerGripper.y(), 'f', 3) );
+    label->setText( QString::number(robotPosition.centerGripper.y(), 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[11];
-    label->setText( QString::number(robotPosition.centerGripper.z(), 'f', 3) );
+    label->setText( QString::number(robotPosition.centerGripper.z(), 'f', STATISTICS_PRECISION) );
 }
 
 void UIMainWindow::setRobotPosition( UIRobot robotPosition )

@@ -18,7 +18,6 @@
 
 enum status_t {
     NOT_CONNECTED,
-    READY_FOR_CALIBRATION,
     CONNECTED,
     PAUSED
 };
@@ -45,7 +44,6 @@ private:
 
     // Layout objects
     QGridLayout *gridLayout;
-    QLabel *robotTypeLabel;
     UIGraphView *robotGraphView;
     UICameraView *cameraView;
 

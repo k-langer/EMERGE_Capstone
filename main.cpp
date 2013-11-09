@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     robot.centerGripper = QVector3D(3, 3, 3);
 
     mainWindow.setRobotPosition(robot);
+    mainWindow.setStatus( CONNECTED );
 
     return application.exec();
 }
