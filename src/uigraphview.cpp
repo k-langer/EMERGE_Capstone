@@ -19,6 +19,14 @@ UIGraphView::~UIGraphView()
 void UIGraphView::initializeGL( QGLPainter *painter )
 {
     painter->setStandardEffect( QGL::LitMaterial );
+
+    // Rotate camera 80 deg
+    camera()->rotateCenter( QQuaternion::fromAxisAndAngle( 0, 1, 0, -80 ) );
+
+    // Move down center so 0,0,0 is close to bottom of screen
+    QVector3D center = camera()->center();
+    center.setY( (double)camera()->viewSize().height() / 2);
+    camera()->setCenter( center );
 }
 
 void UIGraphView::paintGL( QGLPainter *painter )
