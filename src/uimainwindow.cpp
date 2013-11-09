@@ -25,14 +25,14 @@ UIMainWindow::UIMainWindow( QWidget *parent )
 
     // Camera view setup
     this->cameraView = new UICameraView();
-    this->gridLayout->addWidget( this->cameraView, 0, 0, 4, 4 );
+    this->gridLayout->addWidget( this->cameraView, 0, 0, 4, 3 );
 
     // Robot graph setup
     this->robotGraphView = new UIGraphView();
     QWidget *robotGraphContainer = QWidget::createWindowContainer(this->robotGraphView);
     robotGraphContainer->setMinimumSize(1,1);
     robotGraphContainer->setMaximumSize(1000,1000);
-    this->gridLayout->addWidget( robotGraphContainer, 0, 5, 2, 1 );
+    this->gridLayout->addWidget( robotGraphContainer, 0, 4, 3, 2 );
 
     this->_setupStatisticGrid();
 
@@ -85,7 +85,7 @@ void UIMainWindow::_setupStatisticGrid()
     QGridLayout *statisticGrid = new QGridLayout();
     QWidget *statisticGridWindow = new QWidget();
     statisticGridWindow->setLayout( statisticGrid );
-    this->gridLayout->addWidget( statisticGridWindow, 2, 5, 2, 1 );
+    this->gridLayout->addWidget( statisticGridWindow, 3, 4, 1, 1 );
 
     this->statisticLabels = std::vector<QLabel*>();
 
