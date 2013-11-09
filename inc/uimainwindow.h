@@ -47,11 +47,11 @@ private:
     QGridLayout *gridLayout;
     QLabel *robotTypeLabel;
     UIGraphView *robotGraphView;
-    UIGraphView *userGraphView;
     UICameraView *cameraView;
 
     // Private methods
     void _setupStatisticGrid();
+    void _setStatisticsWithRobotPosition( UIRobot robotPosition );
 };
 
 #endif // UIMAINWINDOW_H

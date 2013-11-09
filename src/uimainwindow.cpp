@@ -25,19 +25,12 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     this->cameraView = new UICameraView();
     this->gridLayout->addWidget( this->cameraView, 0, 0, 4, 4 );
 
-    // User graph setup
-    this->userGraphView = new UIGraphView();
-    QWidget *userGraphContainer = QWidget::createWindowContainer(this->userGraphView);
-    userGraphContainer->setMinimumSize(1,1);
-    userGraphContainer->setMaximumSize(1000,1000);
-    this->gridLayout->addWidget( userGraphContainer, 0, 5, 2, 1 );
-
     // Robot graph setup
     this->robotGraphView = new UIGraphView();
     QWidget *robotGraphContainer = QWidget::createWindowContainer(this->robotGraphView);
     robotGraphContainer->setMinimumSize(1,1);
     robotGraphContainer->setMaximumSize(1000,1000);
-    this->gridLayout->addWidget( robotGraphContainer, 2, 5, 2, 1 );
+    this->gridLayout->addWidget( robotGraphContainer, 0, 5, 2, 1 );
 
     // Robot type label setup
     this->robotTypeLabel = new QLabel( "PhantomX Reactor" );
@@ -51,7 +44,7 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     this->setCentralWidget( window );
 
     // Maximize at start
-    this->showMaximized();
+//    this->showMaximized();
 }
 
 UIMainWindow::~UIMainWindow()
@@ -60,7 +53,6 @@ UIMainWindow::~UIMainWindow()
     delete gridLayout;
     delete robotTypeLabel;
     delete robotGraphView;
-    delete userGraphView;
     delete cameraView;
 }
 
@@ -102,32 +94,65 @@ void UIMainWindow::_setupStatisticGrid()
     QGridLayout *statisticGrid = new QGridLayout();
     QWidget *statisticGridWindow = new QWidget();
     statisticGridWindow->setLayout( statisticGrid );
-    this->gridLayout->addWidget( statisticGridWindow, 4, 3, 1, 1 );
+    this->gridLayout->addWidget( statisticGridWindow, 2, 5, 2, 1 );
 
     this->statisticLabels = std::vector<QLabel*>();
 
     // Setup labels
-    QLabel *userX = new QLabel( "UserX: " );
+    QLabel *userX = new QLabel( "Base: " );
     statisticGrid->addWidget( userX, 0, 0, 1, 1 );
-    QLabel *userY = new QLabel( "UserY: " );
+    QLabel *userY = new QLabel( "Shoulder: " );
     statisticGrid->addWidget( userY, 1, 0, 1, 1 );
-    QLabel *userZ = new QLabel( "UserZ: " );
+    QLabel *userZ = new QLabel( "Wrist: " );
     statisticGrid->addWidget( userZ, 2, 0, 1, 1 );
-    QLabel *robotX = new QLabel( "RobotX: " );
-    statisticGrid->addWidget( robotX, 0, 2, 1, 1 );
-    QLabel *robotY = new QLabel( "RobotY: " );
-    statisticGrid->addWidget( robotY, 1, 2, 1, 1 );
-    QLabel *robotZ = new QLabel( "RobotZ: " );
-    statisticGrid->addWidget( robotZ, 2, 2, 1, 1 );
+    QLabel *robotX = new QLabel( "Gripper: " );
+    statisticGrid->addWidget( robotX, 3, 0, 1, 1 );
 
     // Setup value labels
-    for( int i = 0; i < 6; i++ ) {
-        QLabel *label = new QLabel( "0.0" );
-        int row = i % 3;
-        int col = ( i < 3 ) ? 1 : 3;
+    for( int i = 0; i < 12; i++ ) {
+        QLabel *label = new QLabel( QString::number(0) );
+        int row = i / 3;
+        int col = i % 3 + 1;
         this->statisticLabels.push_back( label );
         statisticGrid->addWidget( label, row, col, 1, 1 );
     }
+}
+
+void UIMainWindow::_setStatisticsWithRobotPosition( UIRobot robotPosition )
+{
+    QLabel *label;
+
+    // Base
+    label = this->statisticLabels[0];
+    label->setText( QString::number(robotPosition.base.x(), 'f', 3) );
+    label = this->statisticLabels[1];
+    label->setText( QString::number(robotPosition.base.y(), 'f', 3) );
+    label = this->statisticLabels[2];
+    label->setText( QString::number(robotPosition.base.z(), 'f', 3) );
+
+    // Shoulder
+    label = this->statisticLabels[3];
+    label->setText( QString::number(robotPosition.shoulder.x(), 'f', 3) );
+    label = this->statisticLabels[4];
+    label->setText( QString::number(robotPosition.shoulder.y(), 'f', 3) );
+    label = this->statisticLabels[5];
+    label->setText( QString::number(robotPosition.shoulder.z(), 'f', 3) );
+
+    // Wrist
+    label = this->statisticLabels[6];
+    label->setText( QString::number(robotPosition.wrist.x(), 'f', 3) );
+    label = this->statisticLabels[7];
+    label->setText( QString::number(robotPosition.wrist.y(), 'f', 3) );
+    label = this->statisticLabels[8];
+    label->setText( QString::number(robotPosition.wrist.z(), 'f', 3) );
+
+    // Gripper
+    label = this->statisticLabels[9];
+    label->setText( QString::number(robotPosition.centerGripper.x(), 'f', 3) );
+    label = this->statisticLabels[10];
+    label->setText( QString::number(robotPosition.centerGripper.y(), 'f', 3) );
+    label = this->statisticLabels[11];
+    label->setText( QString::number(robotPosition.centerGripper.z(), 'f', 3) );
 }
 
 void UIMainWindow::setRobotPosition( UIRobot robotPosition )
@@ -141,4 +166,6 @@ void UIMainWindow::setRobotPosition( UIRobot robotPosition )
     this->robotGraphView->addSphere( robotPosition.wrist, .5 );
     this->robotGraphView->addCylinder( robotPosition.wrist, robotPosition.centerGripper, .1);
     this->robotGraphView->addSphere( robotPosition.centerGripper, .5 );
+
+    this->_setStatisticsWithRobotPosition( robotPosition );
 }
