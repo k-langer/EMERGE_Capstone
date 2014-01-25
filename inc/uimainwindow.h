@@ -50,6 +50,9 @@ private:
     // Private methods
     void _setupStatisticGrid();
     void _setStatisticsWithRobotPosition( UIRobot robotPosition );
+
+private slots:
+    void testChangeRobotPosition();
 };
 
 #endif // UIMAINWINDOW_H

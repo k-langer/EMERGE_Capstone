@@ -4,6 +4,7 @@
 #include <QRect>
 #include <QMenuBar>
 #include <QStatusBar>
+#include <QTimer>
 
 #define STATISTICS_PRECISION 3
 
@@ -42,6 +43,14 @@ UIMainWindow::UIMainWindow( QWidget *parent )
 
     // Maximize at start
     this->showMaximized();
+
+    // TESTING
+    this->testChangeRobotPosition();
+    QTimer *timer = new QTimer();
+    timer->setSingleShot(true);
+    timer->start(1000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(testChangeRobotPosition()));
+    // END TESTING
 }
 
 UIMainWindow::~UIMainWindow()
@@ -163,4 +172,16 @@ void UIMainWindow::setRobotPosition( UIRobot robotPosition )
     this->robotGraphView->addSphere( robotPosition.centerGripper, .5 );
 
     this->_setStatisticsWithRobotPosition( robotPosition );
+}
+
+void UIMainWindow::testChangeRobotPosition()
+{
+    static double val = 0;
+    UIRobot robot = UIRobot();
+    robot.base = QVector3D(val, 0, 0);
+    robot.shoulder = QVector3D(1,.5,0);
+    robot.wrist = QVector3D(2,1.5,0);
+    robot.centerGripper = QVector3D(3, 1, 0);
+    this->setRobotPosition(robot);
+    val += 1;
 }
