@@ -35,3 +35,4 @@ arm_updater : $(ARM_UPDATER).cpp
 
 clean: 
 	rm -f *.class *.o *.log
+	rm -r log/
