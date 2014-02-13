@@ -18,8 +18,7 @@ SOURCES += main.cpp\
     src/uigraphview.cpp \
     src/uicameraview.cpp
 
-HEADERS  += mainwindow.h \
-    inc/uimainwindow.h \
+HEADERS  += inc/uimainwindow.h \
     inc/uigraphview.h \
     inc/uicameraview.h \
     inc/uiutil.h \
