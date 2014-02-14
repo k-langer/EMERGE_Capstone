@@ -251,6 +251,7 @@ void loop(){
        ifWait = true; 
     }
     //waitTime = sDeltaTime;
+    Serial.println(' ');
     Serial.println(base);
     Serial.println(' ');
     Serial.println(shoulder);
@@ -267,7 +268,7 @@ void loop(){
     Serial.println(' ');
     Serial.println(ifWait);
     MoveArmTo(base, shoulder, elbow, wrist, wristRot, grip, waitTime, ifWait);
-    
+    Serial.println("done");
     Serial.println('\t');   
   } 
 }
