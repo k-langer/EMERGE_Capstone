@@ -1,0 +1,8 @@
+-Backend Design
+we have three processes: lm_data, updater, controller
+
+lm_data: collect data (xyz, palm direction, speed) from leap motion and insert into db
+
+updater: get the last xyz data entry from db, translate xyz into robot command, validate the command, and then insert into db
+
+controller: get command from db and pass command to robot via USB
