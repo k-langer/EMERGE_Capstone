@@ -35,9 +35,10 @@ namespace pt = boost::posix_time;
 
 string SIMULATE_FILE = "/Users/zhenhangjiang/Documents/MATLAB/test/test";
 bool SIMULATE = false;
-double SHOULDER_LENGTH = 146.5;
-double ELBOW_LENGTH = 146.5;
-double WRIST_LENGTH = 100.0;
+long BASE_HEIGHT = 110L;
+long SHOULDER_LENGTH = 150L;
+long ELBOW_LENGTH = 147L;
+long WRIST_LENGTH = 137L;
 double PI = 3.14159265358979323846;
 
 int BASE_MIN = 200;
@@ -70,7 +71,7 @@ int GRIP_MAX = 512;
 double GRIP_MIN_LENGTH = 0;
 double GRIP_MAX_LENGTH = 30;
 
-unsigned int SLEEP_TIME = 100000;//ten seconds
+unsigned int SLEEP_TIME = 10000;//ten micro-seconds
 int XYZ_INPUT_COUNT = 9;
 int COMMAND_INPUT_LENGTH = 51;
 
@@ -85,6 +86,7 @@ double PRECISION = 0.0000000001;
 struct Cartesian{ double x, y, z; };
 struct ArmAngle{ double base, shoulder, elbow, wrist, wristRot, grip; };
 struct ArmXYZ{ Cartesian base, shoulder, elbow, tip; };
+struct ServoValue{int base, shoulder, elbow, wrist, wristRot, grip;};
 
 ArmAngle to_armangle(Cartesian, double, double, double, ArmXYZ&);
 string get_base(double);
@@ -93,7 +95,7 @@ string get_elbow(double);
 string get_wrist(double);
 string get_wrot(double);
 string get_grip(double);
-string to_string(int number);
+string int_to_string(int number);
 vector<string> split(string str, char delimiter);
 string emerge(vector<string> strs, char delimiter);
 string input_composite(ArmAngle, int wTime, int fWait);
@@ -109,13 +111,16 @@ int main(int argc, const char **argv){
     const string pass(argc >= 4 ? argv[3] : EXAMPLE_PASS);
     const string database(argc >= 5 ? argv[4] : EXAMPLE_DB);
     ArmAngle angles;
+    ServoValue servos;
     string input_string;
     vector<string> strs;
     string command_str;
     double wristAngle, wristRotAngle, gripAngle, speed, fWait;
     try{
-        sql::mysql::MySQL_Driver * driver = sql::mysql::get_driver_instance();
-        std::auto_ptr< sql::Connection > con(driver->connect(url, user, pass));
+        sql::Connection *con;
+        sql::mysql::MySQL_Driver * driver;
+        driver = sql::mysql::get_mysql_driver_instance();
+        con = driver->connect(url, user, pass);
         con->setSchema(database);
         logger("Database is connected");
         
@@ -139,7 +144,10 @@ int main(int argc, const char **argv){
                 tmp = res->getString("_val");
                 strs = split(tmp, ' ');
             }
-            if(tmp.length() == 0) continue;
+            if(tmp.length() == 0){
+                usleep(SLEEP_TIME);
+                continue;
+            }
 
             logger("Data available...");
             total += 1;    
@@ -154,20 +162,17 @@ int main(int argc, const char **argv){
                 continue;
             }
 
-            c.x = atof(strs[1].c_str()) + 200;
+            c.x = atof(strs[1].c_str()) + 50;
             c.y = atof(strs[2].c_str());
-            c.z = atof(strs[3].c_str()) - 250;
+            c.z = atof(strs[3].c_str()) - BASE_HEIGHT*2 - 50;
             wristAngle = atof(strs[4].c_str());
             wristRotAngle = atof(strs[5].c_str());
             gripAngle = atof(strs[8].c_str());
             double proper_speed = 0.2;
-            if(tracking_lost){
-                double dis = sqrt(pow(c.x - prev.x, 2) + 
-                                  pow(c.y - prev.y, 2) +
-                                  pow(c.z - prev.z, 2)); 
-                speed = dis / proper_speed;
-            }
-            else speed = atoi(strs[6].c_str());
+            double dis = sqrt(pow(c.x - prev.x, 2) + 
+                              pow(c.y - prev.y, 2) +
+                              pow(c.z - prev.z, 2)); 
+            speed = dis / proper_speed;
             fWait = atoi(strs[7].c_str());
             ArmXYZ arm_xyz;
             angles = to_armangle(c, wristAngle, 
@@ -188,7 +193,7 @@ int main(int argc, const char **argv){
                 prev.z = c.z;
             }else{
                 logger("Input ignore..." + input_string);
-                logger("Input Length:" + to_string(input_string.length()));
+                logger("Input Length:" + int_to_string(input_string.length()));
                 tracking_lost = true;
             }
             get_current_time();
@@ -208,6 +213,7 @@ int main(int argc, const char **argv){
          return EXIT_FAILURE;
     }
 }
+
 string input_composite(ArmAngle angles, int wTime, int fWait){
     string result = "";
     result += get_base(angles.base);
@@ -223,7 +229,7 @@ string input_composite(ArmAngle angles, int wTime, int fWait){
     result += get_grip(angles.grip);
     result += " ";
     
-    string t = to_string(wTime);
+    string t = int_to_string(wTime);
 
     while(t.length() < 4){
         t = "0" + t;
@@ -231,13 +237,23 @@ string input_composite(ArmAngle angles, int wTime, int fWait){
     result += t;
 
     result += " ";
-    result += to_string(fWait);
+    result += int_to_string(fWait);
 
     return result;
 }
 Cartesian to_cart(ArmAngle arm){
     Cartesian c;
     return c;
+}
+
+int radToServo(float rads){
+    float val = (rads*100)/51 * 100;
+    return (int) val;
+}
+
+void processXYZ(Cartesian c, ServoValue& servos, double wristAngle, double wristRotAngle, double grip){
+    servos.base = radToServo(atan2(c.x, c.y));
+    
 }
 
 ArmAngle to_armangle(Cartesian c, double wristAngle, 
@@ -344,7 +360,7 @@ string get_base(double angle){
              << " Min:" << BASE_MIN<< endl;
         return "";
     }
-    string result = to_string(amount);
+    string result = int_to_string(amount);
     while(result.length() < 3){
         result = "0" + result;
     }
@@ -360,7 +376,7 @@ string get_shoulder(double angle){
              << " Min:" << SHOULDER_MIN <<endl;
         return "";
     }
-    string result = to_string(amount);
+    string result = int_to_string(amount);
     while(result.length() < 3){
         result = "0" + result;
     }
@@ -376,7 +392,7 @@ string get_elbow(double angle){
              << " Min:" << ELBOW_MIN << endl;
         return "";
     }
-    string result = to_string(amount);
+    string result = int_to_string(amount);
     while(result.length() < 3){
         result = "0" + result;
     }
@@ -392,7 +408,7 @@ string get_wrist(double angle){
              << " Min:" << WRIST_MIN << endl;
         return "";
     }
-    string result = to_string(amount);
+    string result = int_to_string(amount);
     while(result.length() < 3){
         result = "0" + result;
     }
@@ -404,7 +420,7 @@ string get_wrot(double angle){
     amount = WROT_MAX - (angle - WROT_MIN_ANGLE) * rate;
     if(amount > WROT_MAX || amount < WROT_MIN) return "";
     if(amount > 999) amount = 999;
-    string result = to_string(amount);
+    string result = int_to_string(amount);
     while(result.length() < 3){
         result = "0" + result;
     }
@@ -423,13 +439,13 @@ string get_grip(double length){
              << " Min:" << GRIP_MIN << endl;   
         return "";
     }
-    string result = to_string(amount);
+    string result = int_to_string(amount);
     while(result.length() < 3){
         result = "0" + result;
     }
     return result;
 }
-string to_string(int number){
+string int_to_string(int number){
     if (number == 0) return "0";
     string temp = "";
     string returnvalue = "";

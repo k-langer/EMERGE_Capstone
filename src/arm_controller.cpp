@@ -33,13 +33,14 @@ using namespace std;
 namespace pt = boost::posix_time;
 string SERIAL_PORT = "/dev/tty.usbserial-A901G712";
 string BAUD_RATE = "38400";
-unsigned int SLEEP_TIME = 1; //ten second
+unsigned int SLEEP_TIME = 10; //0.01 milsec
 unsigned int INIT_TIME = 10000000; //ten second
 int NO = 0;
 int YES = 1;
 int INPUT_LENGTH = 33;
 int INPUT_COUNT = 9;
 int DELAY_INDEX = 7;
+string inputArray[33];
 
 #define EXAMPLE_HOST "localhost"
 #define EXAMPLE_USER "zhen"
@@ -53,7 +54,7 @@ int set_interface_attribs (int fd, int speed, int parity);
 void set_blocking (int fd, int should_block);
 void process_input(int, string);
 string get_time();
-string to_string(int number);
+string int_to_string(int number);
 void get_current_time();
 
 //main
@@ -112,6 +113,7 @@ int main(int argc, const char **argv){
                     cout << "write to serial port...done" << endl;
                 }
             }
+            usleep(SLEEP_TIME);
         }
     } catch (sql::SQLException &e) {
         get_current_time();
@@ -128,19 +130,18 @@ string get_time(){
     time_t t = time(0);   // get time now
     struct tm * now = localtime( & t );
     string result = "";
-    result += to_string(now->tm_mon + 1);
+    result += int_to_string(now->tm_mon + 1);
     result += "-";
-    result += to_string(now->tm_mday);
+    result += int_to_string(now->tm_mday);
     result += " ";
-    result += to_string(now->tm_hour);
+    result += int_to_string(now->tm_hour);
     result += ":";
-    result += to_string(now->tm_min);
+    result += int_to_string(now->tm_min);
     result += ":";
-    result += to_string(now->tm_sec);
+    result += int_to_string(now->tm_sec);
     return result;
 }
 void process_input(int fd, string input){
-    string inputArray[INPUT_COUNT];
     int index = 0, delay_time;
 
     bool input_error = false;
@@ -178,6 +179,8 @@ void process_input(int fd, string input){
             read (fd, response, sizeof response);
             if(*response != '\n')
                 cout << response[0];
+            else
+                cout << endl;
         }
         cout << endl;
         get_current_time();
@@ -186,7 +189,8 @@ void process_input(int fd, string input){
         get_current_time();
         cout << "[ERROR] ignore this input: " << input << endl;
         get_current_time();
-        cout << "input length:" <<input.length() << " Max length: "<< INPUT_LENGTH << endl;
+        cout << "input length:" <<input.length() 
+             << " Max length: "<< INPUT_LENGTH << endl;
     }
 }
 
@@ -195,6 +199,7 @@ void toSerialPort(int fd, string val){
     fd_set rdfs;
     struct timeval timeout = {1, 0};
     char* temp;
+    int timeout_count = 0;
     for(int i = 0; i < val.length(); i++){
         temp = &val[i];
         write(fd, temp, 1);
@@ -205,6 +210,7 @@ void toSerialPort(int fd, string val){
             perror("select failed\n");
         }else if (n == 0){
             puts("Timeout!");
+            timeout_count++;
         }else{
         }
     }
@@ -262,7 +268,7 @@ void set_blocking (int fd, int should_block){
     if (tcsetattr (fd, TCSANOW, &tty) != 0)
         printf("error %d setting term attributes", errno);
 }
- string to_string(int number){
+ string int_to_string(int number){
      if (number == 0) return "0";
      string temp="";
      string returnvalue="";

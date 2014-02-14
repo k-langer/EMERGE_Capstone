@@ -1,8 +1,10 @@
 *.class
-*.log
+*/*.log
 *.pro.user
 *.o
 *.autosave
 build-*
+*.DS_Store
+*.log
 
 *~

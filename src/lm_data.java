@@ -1,4 +1,4 @@
-/******************************************************************************\
+/******************************************************************************
 * Copyright (C) 2012-2013 Leap Motion, Inc. All rights reserved.               *
 * Leap Motion proprietary and confidential. Not for distribution.              *
 * Use subject to the terms of the Leap Motion SDK Agreement available at       *
@@ -153,12 +153,6 @@ class LM_Listener extends Listener {
             if(dTime < 150) return;
             previous_time = current_time;
             total_frame++;
-            logger("~~~~~~~~~~~~~~~~~~~~~~~~~");
-            logger("Total Frame: ", total_frame);
-            logger("Motion:", motion);
-            logger("No Motion: ", no_motion);
-            logger("~~~~~~~~~~~~~~~~~~~~~~~~~");
-
             //System.out.println(frame.hands().get(0).fingers().count()); 
 
             Vector v = hand.palmVelocity();
@@ -176,8 +170,8 @@ class LM_Listener extends Listener {
             //xyz position = palm_position
             Vector pos = hand.palmPosition();
 
-            float MOTION_DISTANCE = 11;
-            double WRISTROT_CHANGE = 3;
+            double MOTION_DISTANCE = 12.1;
+            double WRISTROT_CHANGE = 5;
             double FINGERS_DISTANCE_CHANGE = 5;
 
             //two fingers distance
@@ -192,7 +186,10 @@ class LM_Listener extends Listener {
                              right_finger.tipPosition());
                 if(f_distance != 0) 
                     f_distance = f_distance - right_size - left_size;
+            }else{
+                f_distance = previous_fingers_distance;
             }
+            f_distance /= 5;
             if(previous_position != null && wristRot != -99999 
                && previous_fingers_distance != -1){
                double dPos = Math.abs(pos.distanceTo(previous_position)); 
@@ -215,17 +212,14 @@ class LM_Listener extends Listener {
                } else if(dPos > MOTION_DISTANCE &&
                        dWrot > WRISTROT_CHANGE &&
                        dFin > FINGERS_DISTANCE_CHANGE){
-                   logger("Motion Dectected...");
+                   logger("Motion Dectected...All of three");
                    motion++;
-                   logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
-                   logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
-                   logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
                    previous_position = pos;
                    previous_wristRot = wristRot;
                    previous_fingers_distance = f_distance;
                
                } else if(dPos > MOTION_DISTANCE && dWrot > WRISTROT_CHANGE){
-                   logger("Motion Dectected...");
+                   logger("Motion Dectected...Position + Wrot");
                    motion++;
                    logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
                    logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
@@ -233,7 +227,7 @@ class LM_Listener extends Listener {
                    previous_wristRot = wristRot;
                    //f_distance = previous_fingers_distance;
                } else if(dPos > MOTION_DISTANCE && dFin > FINGERS_DISTANCE_CHANGE){
-                   logger("Motion Dectected...");
+                   logger("Motion Dectected... Position + Finger");
                    motion++;
                    logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
                    logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
@@ -241,7 +235,7 @@ class LM_Listener extends Listener {
                    previous_fingers_distance = f_distance;
                    //wristRot = previous_wristRot;
                } else if(dWrot > WRISTROT_CHANGE && dFin > FINGERS_DISTANCE_CHANGE){
-                   logger("Motion Dectected...");
+                   logger("Motion Dectected...Wrot + Finger");
                    motion++;
                    logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
                    logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
@@ -249,26 +243,26 @@ class LM_Listener extends Listener {
                    previous_wristRot = wristRot;
                    pos = previous_position;
                } else if(dPos > MOTION_DISTANCE){
-                   logger("Motion Dectected...");
+                   logger("Motion Dectected...Position");
                    motion++;
                    logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
                    previous_position = pos;
                    //wristRot = previous_wristRot;
                    //f_distance = previous_fingers_distance;
                } else if(dWrot > WRISTROT_CHANGE){
-                   logger("Motion Dectected...");
+                   logger("Motion Dectected...Wrot");
                    motion++;
                    logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
                    previous_wristRot = wristRot;
                    //f_distance = previous_fingers_distance;
                    pos = previous_position;
                } else if(dFin > FINGERS_DISTANCE_CHANGE){
-                   logger("Motion Dectected...");
+                   logger("Motion Dectected...Finger");
                    motion++;
                    logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
                    previous_fingers_distance = f_distance;
                    pos = previous_position;
-                   //wristRot = previous_wristRot;
+                   wristRot = previous_wristRot;
                }
             }
             previous_position = pos;
@@ -280,11 +274,11 @@ class LM_Listener extends Listener {
 
             //compose input string
             int precision = 5;
-	    xpos = exp_avg(0 - pos.getX(), xpos); 
-	    ypos = exp_avg(pos.getY(), ypos); 
-	    zpos = exp_avg(0 - pos.getZ(), zpos); 
-	    wang = exp_avg(wristAngle, wang); 
-	    wrot = exp_avg(wristRot, wrot); 
+	    xpos = 0 - pos.getX(); 
+	    ypos = pos.getY(); 
+	    zpos = 0 - pos.getZ(); 
+	    wang = wristAngle; 
+	    wrot = wristRot; 
 	
 	    String result = "03 " + round(zpos, precision) + " " + 
                             round(xpos, precision) + " " + 
