@@ -130,6 +130,30 @@ class LM_Listener extends Listener {
     public void logger(String msg, int value){
         System.out.println(get_current_time() + msg + value);
     }
+    public void pauseSequence(Frame frame) {
+        int finger_num = 0;
+        for (Hand hand : frame.hands()) {
+            finger_num+=hand.fingers().count(); 
+        }        
+        if (finger_num == 10) {
+            try {
+                Thread.sleep(1000);
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        while (finger_num > 6) {
+            try {
+                Thread.sleep(100); 
+            } catch(InterruptedException ex) {
+                 Thread.currentThread().interrupt();
+            }
+            finger_num = 0; 
+            for (Hand hand : frame.hands()) {
+                finger_num+=hand.fingers().count(); 
+            }
+        }
+    }
     double xpos = 0;
     double ypos = 0; 
     double zpos = 0; 
