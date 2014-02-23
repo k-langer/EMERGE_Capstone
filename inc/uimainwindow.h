@@ -35,6 +35,7 @@ public:
     status_t getStatus();
 
     void setRobotPosition( UIRobot robotPosition );
+    void setPressure( float pressure );
 
 private:
     // Private members
