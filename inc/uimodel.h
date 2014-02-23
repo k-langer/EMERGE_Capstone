@@ -1,8 +1,6 @@
 #ifndef UIMODEL_H
 #define UIMODEL_H
 
-#include "inc/uimainwindow.h"
-
 #include <QTimer>
 #include <QtSql/QSqlDatabase>
 #include <inc/uirobot.h>

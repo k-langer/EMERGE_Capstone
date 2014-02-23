@@ -5,9 +5,6 @@
 #include <QTimer>
 #include <QtSql/QSqlDatabase>
 
-// Update interval in ms
-#define UPDATE_INTERVAL 100
-
 #define DATABASE_HOST "localhost"
 #define DATABASE_NAME ""
 #define DATABASE_USERNAME ""

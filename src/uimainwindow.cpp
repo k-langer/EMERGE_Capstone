@@ -2,6 +2,7 @@
 
 #include "inc/uimainwindow.h"
 
+#include <QDebug>
 #include <QRect>
 #include <QMenuBar>
 #include <QStatusBar>
@@ -9,11 +10,8 @@
 
 #define STATISTICS_PRECISION 3
 
-#define DEBUG_MODE 0
-
-#if DEBUG_MODE
-#warning Debug mode is on. Turn off before committing
-#endif
+// Update interval in ms
+#define UPDATE_INTERVAL 100
 
 UIMainWindow::UIMainWindow( QWidget *parent )
     : QMainWindow( parent )
@@ -51,18 +49,20 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     // Maximize at start
     this->showMaximized();
 
-    this->testChangeRobotPosition();
-#if DEBUG_MODE
-    QTimer *timer = new QTimer();
-    timer->setSingleShot(false);
-    timer->start(100);
-    connect(timer, SIGNAL(timeout()), this, SLOT(testChangeRobotPosition()));
-#endif
-
+    // Setup model and start UI update timer
+    this->model = new UIModel();
+    bool connected = this->model->connectToDatabase();
+    if (connected) {
+        this->startUpdateTimer();
+    }
+    else {
+        qDebug() << "Failed to connect to model";
+    }
 }
 
 UIMainWindow::~UIMainWindow()
 {
+    this->stopUpdateTimer();
     delete statusBarLabel;
     delete gridLayout;
     delete robotGraphView;
@@ -94,6 +94,19 @@ void UIMainWindow::setStatus( status_t newStatus )
 status_t UIMainWindow::getStatus()
 {
     return this->status;
+}
+
+void UIMainWindow::startUpdateTimer()
+{
+    QTimer *timer = new QTimer();
+    timer->setSingleShot(false);
+    timer->start(UPDATE_INTERVAL);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateDataFromModel()));
+}
+
+void UIMainWindow::stopUpdateTimer()
+{
+    this->updateTimer->stop();
 }
 
 void UIMainWindow::_setupStatisticGrid()
@@ -202,14 +215,8 @@ void UIMainWindow::setPressure( float pressure )
     this->pressureSensorLabel->setText( QString::number(pressure, 'f', STATISTICS_PRECISION) );
 }
 
-void UIMainWindow::testChangeRobotPosition()
+void UIMainWindow::updateDataFromModel()
 {
-    static double val = 0;
-    UIRobot robot = UIRobot();
-    robot.base = QVector3D(val, 0, 0);
-    robot.shoulder = QVector3D(1,.5,0);
-    robot.wrist = QVector3D(2,1.5 - val,0);
-    robot.centerGripper = QVector3D(3, 1, 0);
-    this->setRobotPosition(robot);
-    val += .1;
+    UIRobot robot = this->model->getCurrentRobotPosition();
+    this->setRobotPosition( robot );
 }

@@ -15,15 +15,18 @@ QT += sql
 TARGET = EMERGE_Capstone
 TEMPLATE = app
 
-SOURCES += main.cpp\
+SOURCES += \
+    main.cpp \
+    src/uimodel.cpp \
     src/uimainwindow.cpp \
     src/uigraphview.cpp \
-    src/uicameraview.cpp \
-    src/uimodel.cpp
+    src/uicameraview.cpp
 
-HEADERS  += inc/uimainwindow.h \
+
+HEADERS  += \
+    inc/uimodel.h\
+    inc/uimainwindow.h \
     inc/uigraphview.h \
     inc/uicameraview.h \
     inc/uiutil.h \
-    inc/uirobot.h \
-    inc/uimodel.h
+    inc/uirobot.h
