@@ -41,6 +41,7 @@ private:
     QLabel *statusBarLabel;
     status_t status;
     std::vector<QLabel*> statisticLabels;
+    QLabel *pressureSensorLabel;
 
     // Layout objects
     QGridLayout *gridLayout;
