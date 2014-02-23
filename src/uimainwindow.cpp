@@ -1,6 +1,7 @@
 // UIMainWindow.cpp
 
 #include "inc/uimainwindow.h"
+
 #include <QRect>
 #include <QMenuBar>
 #include <QStatusBar>
@@ -50,8 +51,8 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     // Maximize at start
     this->showMaximized();
 
-#if DEBUG_MODE
     this->testChangeRobotPosition();
+#if DEBUG_MODE
     QTimer *timer = new QTimer();
     timer->setSingleShot(false);
     timer->start(100);

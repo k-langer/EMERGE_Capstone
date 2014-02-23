@@ -12,8 +12,8 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <vector>
-#include "inc/uigraphview.h"
 #include "inc/uicameraview.h"
+#include "inc/uigraphview.h"
 #include "inc/uirobot.h"
 
 enum status_t {
