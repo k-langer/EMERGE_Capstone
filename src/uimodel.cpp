@@ -6,7 +6,7 @@
 #include <QtSql/QSqlDatabase>
 
 #define DATABASE_HOST "localhost"
-#define DATABASE_NAME ""
+#define DATABASE_NAME "capstone"
 #define DATABASE_USERNAME ""
 #define DATABASE_PASSWORD ""
 
