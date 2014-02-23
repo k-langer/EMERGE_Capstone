@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-LIBS += $(SUBLIBS) -lQt53D -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lQt5Multimedia -lQt5MultimediaWidgets
+LIBS += $(SUBLIBS) -lQt53D -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lQt5Multimedia -lQt5MultimediaWidgets -lmysqlclient_r
 
 greaterThan(QT_MAJOR_VERSION, 4):
 QT += widgets
