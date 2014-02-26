@@ -35,11 +35,11 @@ lm_data : $(LM_DATA).java
 
 arm_controller : $(ARM_CONTROLLER).o
 	$(CC) -o $(ARM_CONTROLLER).o -c $(SQLFLAGS) $(ARM_CONTROLLER).cpp
-	$(CC) -o $(BINARY)controller $(ARM_CONTROLLER).o $(CPPFLAGS) $(SQLLIBS)
+	$(CC) -o $(BINARY)Controller $(ARM_CONTROLLER).o $(CPPFLAGS) $(SQLLIBS)
 
 arm_updater : $(ARM_UPDATER).cpp
 	$(CC) -o $(ARM_UPDATER).o -c $(SQLFLAGS) $(ARM_UPDATER).cpp
-	$(CC) -o $(BINARY)updater $(ARM_UPDATER).o $(CPPFLAGS) $(SQLLIBS)
+	$(CC) -o $(BINARY)Updater $(ARM_UPDATER).o $(CPPFLAGS) $(SQLLIBS)
 
 clean: 
 	rm -f *.class *.o *.log
