@@ -1,12 +1,17 @@
 // UIMainWindow.cpp
 
 #include "inc/uimainwindow.h"
+
+#include <QDebug>
 #include <QRect>
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QTimer>
 
 #define STATISTICS_PRECISION 3
+
+// Update interval in ms
+#define UPDATE_INTERVAL 100
 
 UIMainWindow::UIMainWindow( QWidget *parent )
     : QMainWindow( parent )
@@ -44,17 +49,20 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     // Maximize at start
     this->showMaximized();
 
-    // TESTING
-    this->testChangeRobotPosition();
-    QTimer *timer = new QTimer();
-    timer->setSingleShot(true);
-    timer->start(1000);
-    connect(timer, SIGNAL(timeout()), this, SLOT(testChangeRobotPosition()));
-    // END TESTING
+    // Setup model and start UI update timer
+    this->model = new UIModel();
+    bool connected = this->model->connectToDatabase();
+    if (connected) {
+        this->startUpdateTimer();
+    }
+    else {
+        qDebug() << "Failed to connect to model";
+    }
 }
 
 UIMainWindow::~UIMainWindow()
 {
+    this->stopUpdateTimer();
     delete statusBarLabel;
     delete gridLayout;
     delete robotGraphView;
@@ -88,6 +96,19 @@ status_t UIMainWindow::getStatus()
     return this->status;
 }
 
+void UIMainWindow::startUpdateTimer()
+{
+    QTimer *timer = new QTimer();
+    timer->setSingleShot(false);
+    timer->start(UPDATE_INTERVAL);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateDataFromModel()));
+}
+
+void UIMainWindow::stopUpdateTimer()
+{
+    this->updateTimer->stop();
+}
+
 void UIMainWindow::_setupStatisticGrid()
 {
     // Sets up statistics
@@ -99,27 +120,42 @@ void UIMainWindow::_setupStatisticGrid()
     this->statisticLabels = std::vector<QLabel*>();
 
     // Setup labels
+    QLabel *xLabel = new QLabel( "X: " );
+    xLabel->setStyleSheet( "QLabel {font:bold;}" );
+    statisticGrid->addWidget( xLabel, 0, 1, 1, 1 );
+    QLabel *yLabel = new QLabel( "Y: " );
+    yLabel->setStyleSheet( "QLabel {font:bold;}" );
+    statisticGrid->addWidget( yLabel, 0, 2, 1, 1 );
+    QLabel *zLabel = new QLabel( "Z: " );
+    zLabel->setStyleSheet( "QLabel {font:bold;}" );
+    statisticGrid->addWidget( zLabel, 0, 3, 1, 1 );
     QLabel *baseLabel = new QLabel( "Base: " );
     baseLabel->setStyleSheet( "QLabel {font:bold;}" );
-    statisticGrid->addWidget( baseLabel, 0, 0, 1, 1 );
+    statisticGrid->addWidget( baseLabel, 1, 0, 1, 1 );
     QLabel *shoulderLabel = new QLabel( "Shoulder: " );
     shoulderLabel->setStyleSheet( "QLabel {font:bold;}" );
-    statisticGrid->addWidget( shoulderLabel, 1, 0, 1, 1 );
+    statisticGrid->addWidget( shoulderLabel, 2, 0, 1, 1 );
     QLabel *wristLabel = new QLabel( "Wrist: " );
     wristLabel->setStyleSheet( "QLabel {font:bold;}" );
-    statisticGrid->addWidget( wristLabel, 2, 0, 1, 1 );
+    statisticGrid->addWidget( wristLabel, 3, 0, 1, 1 );
     QLabel *gripperLabel = new QLabel( "Gripper: " );
     gripperLabel->setStyleSheet( "QLabel {font:bold;}" );
-    statisticGrid->addWidget( gripperLabel, 3, 0, 1, 1 );
+    statisticGrid->addWidget( gripperLabel, 4, 0, 1, 1 );
 
     // Setup value labels
     for( int i = 0; i < 12; i++ ) {
         QLabel *label = new QLabel( QString::number(0.0000, 'f', STATISTICS_PRECISION) );
-        int row = i / 3;
+        int row = i / 3 + 1;
         int col = i % 3 + 1;
         this->statisticLabels.push_back( label );
         statisticGrid->addWidget( label, row, col, 1, 1 );
     }
+
+    QLabel *pressureSensorTitleLabel = new QLabel( "Pressure Sensor: " );
+    pressureSensorTitleLabel->setStyleSheet( "QLabel {font:bold;}" );
+    statisticGrid->addWidget( pressureSensorTitleLabel, 1, 4, 1, 1 );
+    this->pressureSensorLabel = new QLabel( QString::number(0.0000, 'f', STATISTICS_PRECISION) );
+    statisticGrid->addWidget( this->pressureSensorLabel, 1, 5, 1, 1 );
 }
 
 void UIMainWindow::_setStatisticsWithRobotPosition( UIRobot robotPosition )
@@ -174,14 +210,13 @@ void UIMainWindow::setRobotPosition( UIRobot robotPosition )
     this->_setStatisticsWithRobotPosition( robotPosition );
 }
 
-void UIMainWindow::testChangeRobotPosition()
+void UIMainWindow::setPressure( float pressure )
 {
-    static double val = 0;
-    UIRobot robot = UIRobot();
-    robot.base = QVector3D(val, 0, 0);
-    robot.shoulder = QVector3D(1,.5,0);
-    robot.wrist = QVector3D(2,1.5,0);
-    robot.centerGripper = QVector3D(3, 1, 0);
-    this->setRobotPosition(robot);
-    val += 1;
+    this->pressureSensorLabel->setText( QString::number(pressure, 'f', STATISTICS_PRECISION) );
+}
+
+void UIMainWindow::updateDataFromModel()
+{
+    UIRobot robot = this->model->getCurrentRobotPosition();
+    this->setRobotPosition( robot );
 }
