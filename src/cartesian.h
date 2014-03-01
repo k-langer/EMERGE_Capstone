@@ -14,7 +14,7 @@ public:
     double getX();
     double getY();
     double getZ();
-    void print();
+    string toString();
 private:
     double x;
     double y;
@@ -52,8 +52,8 @@ double Cartesian::getY(){
 double Cartesian::getZ(){
     return z;
 }
-void Cartesian::print(){
-    cout << "x:" << getX() << " "
-         << "y:" << getY() << " "
-         << "z:" << getZ() << endl;
+string Cartesian::toString(){
+    return "X:" + to_string(x) + " " +
+           "Y:" + to_string(y) + " " +
+           "Z:" + to_string(z);
 }
