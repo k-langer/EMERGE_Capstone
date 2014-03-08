@@ -58,10 +58,10 @@ private:
     // Model
     UIModel *model;
     QTimer *updateTimer;
-    void startUpdateTimer();
     void stopUpdateTimer();
 
 private slots:
+    void startUpdateTimer();
     void updateDataFromModel();
 };
 

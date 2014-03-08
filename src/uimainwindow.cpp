@@ -53,7 +53,10 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     this->model = new UIModel();
     bool connected = this->model->connectToDatabase();
     if (connected) {
-        this->startUpdateTimer();
+        QTimer *timer = new QTimer();
+        timer->setSingleShot(true);
+        timer->start(2);
+        connect(timer, SIGNAL(timeout()), this, SLOT(startUpdateTimer()));
     }
     else {
         qDebug() << "Failed to connect to model";
