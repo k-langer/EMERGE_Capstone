@@ -23,17 +23,15 @@ void UIGraphView::initializeGL( QGLPainter *painter )
     painter->setStandardEffect( QGL::LitMaterial );
 
     // Rotate camera 80 deg
-    camera()->rotateCenter( QQuaternion::fromAxisAndAngle( 0, 1, 0, -80 ) );
+    camera()->rotateCenter( QQuaternion::fromAxisAndAngle( 0, 1, 0, -70 ) );
+    camera()->rotateCenter( QQuaternion::fromAxisAndAngle( 1, 0, 0, 90 ) );
 
     // Move down center so 0,0,0 is close to bottom of screen
-    QVector3D center = camera()->center();
-    center.setY( (double)camera()->viewSize().height() / 2);
-    camera()->setCenter( center );
+    camera()->setCenter( QVector3D(0, 0, 1.5) );
 }
 
 void UIGraphView::paintGL( QGLPainter *painter )
 {
-    qDebug() << "Painting";
     // Paints each node in this->nodes
     for( int i = 0; i < (int)this->nodes->size(); i++ )
     {
@@ -44,14 +42,12 @@ void UIGraphView::paintGL( QGLPainter *painter )
 
 void UIGraphView::addSphere( const QVector3D vector, const double diameter )
 {
-    qDebug() << "Adding sphere at" << vector;
     QGLSceneNode *sphereNode = this->generateSphere( vector, diameter );
     this->nodes->push_back( sphereNode );
 }
 
 void UIGraphView::addCylinder( const QVector3D vector1, const QVector3D vector2, const double diameter )
 {
-    qDebug() << "Adding cylinder from " << vector1 << "to" << vector2;
     QGLSceneNode *cylinderNode = this->generateCylinder( vector1, vector2, diameter );
     this->nodes->push_back( cylinderNode );
 }
@@ -114,7 +110,6 @@ QGLSceneNode * UIGraphView::generateCylinder( const QVector3D vector1, const QVe
 
 void UIGraphView::reset()
 {
-    qDebug() << "Reset";
     this->nodes->clear();
     this->update();
 
