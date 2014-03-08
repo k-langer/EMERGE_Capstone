@@ -82,23 +82,23 @@ UIRobot UIModel::getCurrentRobotPosition()
     qreal shoulderY = rawShoulderY.toDouble();
     QString rawShoulderZ = valueList.at(2);
     qreal shoulderZ = rawShoulderZ.toDouble();
-    robot.shoulder = QVector3D(shoulderX, shoulderY, shoulderZ);
+    robot.shoulder = QVector3D(shoulderX * .01, shoulderY * .01, shoulderZ * .01);
 
-    QString rawGripperX = valueList.at(3);
-    qreal gripperX = rawGripperX.toDouble();
-    QString rawGripperY = valueList.at(4);
-    qreal gripperY = rawGripperY.toDouble();
-    QString rawGripperZ = valueList.at(5);
-    qreal gripperZ = rawGripperZ.toDouble();
-    robot.centerGripper = QVector3D(gripperX, gripperY, gripperZ);
-
-    QString rawWristX = valueList.at(6);
+    QString rawWristX = valueList.at(3);
     qreal wristX = rawWristX.toDouble();
-    QString rawWristY = valueList.at(7);
+    QString rawWristY = valueList.at(4);
     qreal wristY = rawWristY.toDouble();
-    QString rawWristZ = valueList.at(8);
+    QString rawWristZ = valueList.at(5);
     qreal wristZ = rawWristZ.toDouble();
-    robot.wrist = QVector3D(wristX, wristY, wristZ);
+    robot.wrist = QVector3D(wristX * .01, wristY * .01, wristZ * .01);
+
+    QString rawGripperX = valueList.at(6);
+    qreal gripperX = rawGripperX.toDouble();
+    QString rawGripperY = valueList.at(7);
+    qreal gripperY = rawGripperY.toDouble();
+    QString rawGripperZ = valueList.at(8);
+    qreal gripperZ = rawGripperZ.toDouble();
+    robot.centerGripper = QVector3D(gripperX * .01, gripperY * .01, gripperZ * .01);
 
     return robot;
 }

@@ -11,7 +11,7 @@
 #define STATISTICS_PRECISION 3
 
 // Update interval in ms
-#define UPDATE_INTERVAL 100
+#define UPDATE_INTERVAL 1000
 
 UIMainWindow::UIMainWindow( QWidget *parent )
     : QMainWindow( parent )
