@@ -9,7 +9,6 @@ DROP TABLE IF EXISTS xyz_tmp;
 CREATE TABLE xyz_tmp (
     id INT NOT NULL AUTO_INCREMENT,
     value VARCHAR(100) NOT NULL,
-    output VARCHAR(100) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -30,7 +29,7 @@ CREATE TABLE command (
 DROP TABLE IF EXISTS ui_xyz;
 CREATE TABLE ui_xyz (
     id INT NOT NULL AUTO_INCREMENT,
-    value VARCHAR(100) NOT NULL,
+    value VARCHAR(254) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -43,7 +42,6 @@ BEGIN
     DECLARE val_id INT;
     IF(EXISTS(SELECT value FROM xyz LIMIT 1)) THEN
         SELECT value, id INTO rs, val_id FROM xyz ORDER BY id DESC LIMIT 1;
-        UPDATE xyz_tmp set output="1" where id = val_id;
         DELETE FROM xyz;
     END IF;
 END/
@@ -83,9 +81,9 @@ delimiter ;
 
 DROP PROCEDURE IF EXISTS add_ui_input;
 delimiter /
-CREATE PROCEDURE add_ui_input(IN input CHAR(100))
+CREATE PROCEDURE add_ui_input(IN value CHAR(254))
 BEGIN
-     INSERT INTO ui_xyz VALUES(DEFAULT, input);
+     INSERT INTO ui_xyz VALUES(DEFAULT, value);
 END/
 delimiter ;
 
