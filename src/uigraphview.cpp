@@ -31,6 +31,7 @@ void UIGraphView::initializeGL( QGLPainter *painter )
 
 void UIGraphView::paintGL( QGLPainter *painter )
 {
+    qDebug() << "Painting";
     // Paints each node in this->nodes
     for( int i = 0; i < (int)this->nodes->size(); i++ )
     {
@@ -41,12 +42,14 @@ void UIGraphView::paintGL( QGLPainter *painter )
 
 void UIGraphView::addSphere( const QVector3D vector, const double diameter )
 {
+    qDebug() << "Adding sphere at" << vector;
     QGLSceneNode *sphereNode = this->generateSphere( vector, diameter );
     this->nodes->push_back( sphereNode );
 }
 
 void UIGraphView::addCylinder( const QVector3D vector1, const QVector3D vector2, const double diameter )
 {
+    qDebug() << "Adding cylinder from " << vector1 << "to" << vector2;
     QGLSceneNode *cylinderNode = this->generateCylinder( vector1, vector2, diameter );
     this->nodes->push_back( cylinderNode );
 }
@@ -101,6 +104,7 @@ QGLSceneNode * UIGraphView::generateCylinder( const QVector3D vector1, const QVe
 
 void UIGraphView::reset()
 {
+    qDebug() << "Reset";
     this->nodes->clear();
     this->update();
 }
