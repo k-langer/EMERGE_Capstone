@@ -11,7 +11,7 @@
 #define STATISTICS_PRECISION 3
 
 // Update interval in ms
-#define UPDATE_INTERVAL 1000
+#define UPDATE_INTERVAL 800
 
 UIMainWindow::UIMainWindow( QWidget *parent )
     : QMainWindow( parent )
@@ -58,14 +58,6 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     else {
         qDebug() << "Failed to connect to model";
     }
-
-#warning remove this after testing
-    UIRobot robot = UIRobot();
-    robot.base = QVector3D(0,0,0);
-    robot.shoulder = QVector3D(1,.5,0);
-    robot.wrist = QVector3D(2,1.5,0);
-    robot.centerGripper = QVector3D(3,1,0);
-    this->setRobotPosition(robot);
 }
 
 UIMainWindow::~UIMainWindow()
@@ -172,35 +164,35 @@ void UIMainWindow::_setStatisticsWithRobotPosition( UIRobot robotPosition )
 
     // Base
     label = this->statisticLabels[0];
-    label->setText( QString::number(robotPosition.base.x(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.base.x() * 100, 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[1];
-    label->setText( QString::number(robotPosition.base.y(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.base.y() * 100, 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[2];
-    label->setText( QString::number(robotPosition.base.z(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.base.z() * 100, 'f', STATISTICS_PRECISION) );
 
     // Shoulder
     label = this->statisticLabels[3];
-    label->setText( QString::number(robotPosition.shoulder.x(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.shoulder.x() * 100, 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[4];
-    label->setText( QString::number(robotPosition.shoulder.y(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.shoulder.y() * 100, 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[5];
-    label->setText( QString::number(robotPosition.shoulder.z(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.shoulder.z() * 100, 'f', STATISTICS_PRECISION) );
 
     // Wrist
     label = this->statisticLabels[6];
-    label->setText( QString::number(robotPosition.wrist.x(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.wrist.x() * 100, 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[7];
-    label->setText( QString::number(robotPosition.wrist.y(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.wrist.y() * 100, 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[8];
-    label->setText( QString::number(robotPosition.wrist.z(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.wrist.z() * 100, 'f', STATISTICS_PRECISION) );
 
     // Gripper
     label = this->statisticLabels[9];
-    label->setText( QString::number(robotPosition.centerGripper.x(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.centerGripper.x() * 100, 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[10];
-    label->setText( QString::number(robotPosition.centerGripper.y(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.centerGripper.y() * 100, 'f', STATISTICS_PRECISION) );
     label = this->statisticLabels[11];
-    label->setText( QString::number(robotPosition.centerGripper.z(), 'f', STATISTICS_PRECISION) );
+    label->setText( QString::number(robotPosition.centerGripper.z() * 100, 'f', STATISTICS_PRECISION) );
 }
 
 void UIMainWindow::setRobotPosition( UIRobot robotPosition )

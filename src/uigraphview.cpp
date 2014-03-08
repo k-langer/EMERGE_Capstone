@@ -1,8 +1,10 @@
 #include "inc/uigraphview.h"
 #include "inc/uiutil.h"
+
 #include <Qt3D/QGLSphere>
 #include <Qt3D/QGLCylinder>
 #include <Qt3D/QGLBuilder>
+#include <Qt3D/QGLMaterial>
 #include <Qt3D/QGraphicsRotation3D>
 #include <Qt3D/QGraphicsTranslation3D>
 
@@ -65,6 +67,10 @@ QGLSceneNode * UIGraphView::generateSphere( const QVector3D vector, const double
     QGLSceneNode *sphere = builder.finalizedSceneNode();
     sphere->setPosition( vector );
 
+    QGLMaterial *white = new QGLMaterial();
+    white->setColor(QColor(255,255,255));
+    sphere->setMaterial(white);
+
     return sphere;
 }
 
@@ -99,6 +105,10 @@ QGLSceneNode * UIGraphView::generateCylinder( const QVector3D vector1, const QVe
     translation->setTranslate( translationVector );
     cylinder->addTransform( translation );
 
+    QGLMaterial *white = new QGLMaterial();
+    white->setColor(QColor(255,255,255));
+    cylinder->setMaterial(white);
+
     return cylinder;
 }
 
@@ -107,4 +117,23 @@ void UIGraphView::reset()
     qDebug() << "Reset";
     this->nodes->clear();
     this->update();
+
+    // Add x,y,z axes
+    QGLSceneNode *xAxis = this->generateCylinder(QVector3D(0,0,0), QVector3D(100,0,0), .08);
+    QGLMaterial *red = new QGLMaterial();
+    red->setColor(QColor(255,0,0));
+    xAxis->setMaterial(red);
+    this->nodes->push_back(xAxis);
+
+    QGLSceneNode *yAxis = this->generateCylinder(QVector3D(0,0,0), QVector3D(0,100,0), .08);
+    QGLMaterial *green = new QGLMaterial();
+    green->setColor(QColor(0,255,0));
+    yAxis->setMaterial(green);
+    this->nodes->push_back(yAxis);
+
+    QGLSceneNode *zAxis = this->generateCylinder(QVector3D(0,0,0), QVector3D(0,0,100), .08);
+    QGLMaterial *blue = new QGLMaterial();
+    blue->setColor(QColor(0,0,255));
+    zAxis->setMaterial(blue);
+    this->nodes->push_back(zAxis);
 }
