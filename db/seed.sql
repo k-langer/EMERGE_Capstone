@@ -89,7 +89,7 @@ delimiter ;
 
 DROP PROCEDURE IF EXISTS get_ui_data;
 delimiter /
-CREATE PROCEDURE get_ui_data(OUT rs CHAR(100))
+CREATE PROCEDURE get_ui_data(OUT rs CHAR(254))
 BEGIN
     DECLARE val_id INT;
     IF(EXISTS(SELECT value FROM ui_xyz LIMIT 1)) THEN
