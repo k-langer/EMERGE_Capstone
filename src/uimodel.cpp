@@ -100,5 +100,14 @@ UIRobot UIModel::getCurrentRobotPosition()
     qreal gripperZ = rawGripperZ.toDouble();
     robot.centerGripper = QVector3D(gripperX * .01, gripperY * .01, gripperZ * .01);
 
+    QString rawGripperLength = valueList.at(9);
+    qreal gripperLength = rawGripperLength.toDouble() * .02;
+    QVector3D leftGripper = robot.centerGripper;
+    leftGripper.setY(leftGripper.y() - gripperLength / 2);
+    robot.leftGripper = leftGripper;
+    QVector3D rightGripper = robot.centerGripper;
+    rightGripper.setY(rightGripper.y() + gripperLength / 2);
+    robot.rightGripper = rightGripper;
+
     return robot;
 }
