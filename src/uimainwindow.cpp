@@ -223,7 +223,6 @@ void UIMainWindow::setPressure( float pressure )
 
 void UIMainWindow::updateDataFromModel()
 {
-    qDebug() << "Updating";
     UIRobot robot = this->model->getCurrentRobotPosition();
     this->setRobotPosition( robot );
 }
