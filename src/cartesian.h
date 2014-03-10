@@ -1,6 +1,7 @@
 /**/
 #include <iostream>
 #include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -14,7 +15,9 @@ public:
     double getX();
     double getY();
     double getZ();
+    double distanceTo(Cartesian);
     string toString();
+    string toUICommandString();
 private:
     double x;
     double y;
@@ -52,8 +55,18 @@ double Cartesian::getY(){
 double Cartesian::getZ(){
     return z;
 }
+double Cartesian::distanceTo(Cartesian dest){
+    return sqrt((getX() - dest.getX())*(getX() - dest.getX()) +
+                (getY() - dest.getY())*(getY() - dest.getY()) +
+                (getZ() - dest.getZ())*(getZ() - dest.getZ()));
+}
 string Cartesian::toString(){
     return "X:" + to_string(x) + " " +
            "Y:" + to_string(y) + " " +
            "Z:" + to_string(z);
+}
+string Cartesian::toUICommandString(){
+    return to_string(x) + " " +
+            to_string(y) + " " +
+            to_string(z);
 }

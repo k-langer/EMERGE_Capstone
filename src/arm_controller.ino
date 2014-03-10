@@ -30,7 +30,6 @@
 #include <ArmControl.h>
 #include <Wire.h> 
 #include <math.h>
-//#include <LiquidCrystal_I2C.h>
 
 
 
@@ -39,24 +38,14 @@
 /* Servo IDs */
 enum {
   SID_BASE=1, SID_RSHOULDER, SID_LSHOULDER, SID_RELBOW, SID_LELBOW, SID_WRIST, SID_WRISTROT, SID_GRIP};
-
 enum {
   IKM_IK3D_CARTESIAN, IKM_CYLINDRICAL};
-
-// status messages for IK return codes..
 enum {
   IKS_SUCCESS=0, IKS_WARNING, IKS_ERROR};
 
 
-#define CNT_SERVOS  8 //(sizeof(pgm_axdIDs)/sizeof(pgm_axdIDs[0]))
+#define CNT_SERVOS  8
 
-// Define some Min and Maxs for IK Movements...
-//                y   Z
-//                |  /
-//                |/
-//            ----+----X (X and Y are flat on ground, Z is up in air...
-//                |
-//                |
 #define IK_MAX_X  300
 #define IK_MIN_X  -300
 
@@ -162,7 +151,7 @@ void setup() {
   bioloid.readPose();
   
   // Start off to put arm to home position...
-  MoveArmTo(512, 212, 212, 852, 512, 256, sDeltaTime, true);
+  MoveArmTo(512, 210, 215, 710, 512, 256, sDeltaTime, true);
 
   MSound(3, 60, 2000, 80, 2250, 900, 2500);
   Serial.println("MSound execute");
@@ -190,7 +179,7 @@ int getInputValue(int numByte, boolean firstSignByte = false, char* msg = "" ){
     for(int i = 0; i < numByte; i++){
         while(Serial.available() <= 0){}
         a[i] = Serial.read() - 48;
-        //Serial.print(a[i]);
+        //Serial.println(a[i]);
         if(i == 0 && firstSignByte == true){//negative value
           //do nothing
         }else{
@@ -219,22 +208,21 @@ void sleep(int t){
 //MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, int sGrip, int wTime, boolean fWait)
 // MoveArmTo(512, 212, 212, 512, 512, 256, sDeltaTime, true); 
 void loop(){
-  //01 home position
+  //01 sleep
   //02 torque on
   //03 perform action
   int action = getInputValue(2, false);
   if(action == 1){
-    Serial.print("Home");
+    Serial.println("Sleep");
     getInputValue(23, false);
-    MoveArmToHome();
+    PutArmToSleep();
     Serial.println('\t');
   }else if(action == 2){
-    Serial.print("Reboot");
+    Serial.println("Reboot");
     getInputValue(23, false);
     setup();
-   Serial.println('\t');
+    Serial.println('\t');
   }else if(action == 3){
-    Serial.print("Command");
     int base, shoulder, elbow, wrist, wristRot, grip, waitTime;
     boolean ifWait;
     base = getInputValue(3, false);
@@ -250,88 +238,9 @@ void loop(){
     }else{
        ifWait = true; 
     }
-    //waitTime = sDeltaTime;
-    Serial.println(' ');
-    Serial.println(base);
-    Serial.println(' ');
-    Serial.println(shoulder);
-    Serial.println(' ');
-    Serial.println(elbow);
-    Serial.println(' ');
-    Serial.println(wrist);
-    Serial.println(' ');
-    Serial.println(wristRot);
-    Serial.println(' ');
-    Serial.println(grip);
-    Serial.println(' ');
-    Serial.println(waitTime);
-    Serial.println(' ');
-    Serial.println(ifWait);
     MoveArmTo(base, shoulder, elbow, wrist, wristRot, grip, waitTime, ifWait);
-    Serial.println("done");
     Serial.println('\t');   
   } 
-}
-
-//===================================================================================================
-// ProcessUserInput3D: Process the Userinput when we are in 3d Mode
-//===================================================================================================
-boolean ProcessUserInput3D(void) {
-  
-  // We Are in IK mode, so figure out what position we would like the Arm to move to.
-  // We have the Coordinates system like:
-  //
-  //                y   Z
-  //                |  /
-  //                |/
-  //            ----+----X (X and Y are flat on ground, Z is up in air...
-  //                |
-  //                |
-  //
-  boolean fChanged = false;
-  int   sIKX;                  // Current X value in mm
-  int   sIKY;                  //
-  int   sIKZ;
-  int   sIKGA;    
-
-  // Limit how far we can go by checking the status of the last move.  If we are in a warning or error
-  // condition, don't allow the arm to move farther away...
-
-  if (g_bIKStatus == IKS_SUCCESS) {
-    
-// Keep IK values within limits
-//
-    sIKX = min(max(armcontrol.Xaxis, IK_MIN_X), IK_MAX_X);    
-    sIKY = min(max(armcontrol.Yaxis, IK_MIN_Y), IK_MAX_Y);    
-    sIKZ = min(max(armcontrol.Zaxis, IK_MIN_Z), IK_MAX_Z);
-    sIKGA = min(max(armcontrol.W_ang, IK_MIN_GA), IK_MAX_GA);  // Currently in Servo coords..
-    sWristRot = min(max(armcontrol.W_rot, WROT_MIN), WROT_MAX);
-    sGrip = min(max(armcontrol.Grip, GRIP_MIN), GRIP_MAX);
-    sDeltaTime = armcontrol.dtime*16;
-    
-  }
-
-  fChanged = (sIKX != g_sIKX) || (sIKY != g_sIKY) || (sIKZ != g_sIKZ) || (sIKGA != g_sIKGA) || (sWristRot != g_sWristRot) || (sGrip != g_sGrip);  
-
-
-
-  if (fChanged) {
-    //LCD(sIKX, sIKY, sIKZ, sIKGA, sWristRot, sDeltaTime);    
-    g_bIKStatus = doArmIK(true, sIKX, sIKY, sIKZ, sIKGA);
-    
-  }
-  return fChanged;
-
-}
-
-
-
-//===================================================================================================
-// MoveArmToHome
-//===================================================================================================
-void MoveArmToHome(void) {
-    g_bIKStatus = doArmIK(true, 0, (2*ElbowLength)/3+WristLength, BaseHeight+(2*ShoulderLength)/3, 0);
-    MoveArmTo(sBase, sShoulder, sElbow, sWrist, 512, 256, sDeltaTime, true);
 }
 
 //===================================================================================================
@@ -359,36 +268,18 @@ void MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, 
   // First make sure servos are not free...
   if (g_fServosFree) {
     g_fServosFree = false;
-
     for(uint8_t i=1; i <= CNT_SERVOS; i++) {
       TorqueOn(i);
     }
     bioloid.readPose();
   }
 
-
-#ifdef DEBUG
-  if (g_fDebugOutput) {
-    Serial.print("[");
-    Serial.print(sBase, DEC);
-    Serial.print(" ");
-    Serial.print(sShoulder, DEC);
-    Serial.print(" ");
-    Serial.print(sElbow, DEC);
-    Serial.print(" ");
-    Serial.print(sWrist, DEC);
-    Serial.print(" ");
-    Serial.print(sWristRot, DEC);
-    Serial.print(" ");
-    Serial.print(sGrip, DEC);
-    Serial.println("]");
-  }
-#endif
   // Make sure the previous movement completed.
   // Need to do it before setNextPos calls as this
   // is used in the interpolating code...
   while (bioloid.interpolating > 0) {
     bioloid.interpolateStep();
+    isGripLoaded();
     delay(3);
   }
 
@@ -410,38 +301,42 @@ void MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, 
     sMaxDelta = sDelta;
   bioloid.setNextPose(SID_WRIST, sWrist);
 
-#ifdef OPT_WRISTROT
-  bioloid.setNextPose(SID_WRISTROT, sWristRot); 
-#endif  
+  bioloid.setNextPose(SID_WRISTROT, sWristRot);  
 
   bioloid.setNextPose(SID_GRIP, sGrip);
 
 
   // Save away the current positions...
-  g_sBase = sBase;
-  g_sShoulder = sShoulder;
-  g_sElbow = sElbow;
-  g_sWrist = sWrist;
-  g_sWristRot = sWristRot;
-  g_sGrip = sGrip;
-
-  // Now start the move - But first make sure we don't move too fast.  
-//  if (((long)sMaxDelta*wTime/1000L) > MAX_SERVO_DELTA_PERSEC) {
-//    wTime = ((long)sMaxDelta*1000L)/ MAX_SERVO_DELTA_PERSEC;
-//  }
+  //g_sBase = sBase;
+//  g_sShoulder = sShoulder;
+//  g_sElbow = sElbow;
+//  g_sWrist = sWrist;
+//  g_sWristRot = sWristRot;
+//  g_sGrip = sGrip;
 
   bioloid.interpolateSetup(wTime);
 
   // Do at least the first movement
   bioloid.interpolateStep();
-
+  isGripLoaded();
   // And if asked to, wait for the previous move to complete...
   if (fWait) {
     while (bioloid.interpolating > 0) {
       bioloid.interpolateStep();
+      isGripLoaded();
       delay(3);
     }
   }
+}
+
+//test code for now
+void isGripLoaded(){
+  //int post = ax12GetRegister(SID_GRIP, AX_PRESENT_POSITION_L, 2);
+  int load = ax12GetRegister(SID_GRIP, AX_PRESENT_LOAD_L, 2);
+  Serial.print("Grip load:");
+  Serial.println(load);
+  //Serial.print("Grip pos:");
+  //Serial.println(post);
 }
 
 //===================================================================================================

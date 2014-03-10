@@ -23,6 +23,7 @@ public:
     void setGripLength(double gripLength);
     void setWrotAngle(double angle);
     void setWristAngle(double angle);
+    void setToArm(Arm*);
     
     //false if conversion failed;
     //need to call setPosition(), setGripLength(),
@@ -45,6 +46,7 @@ public:
     Cartesian getElbowXYZ();
     Cartesian getWristXYZ();
     double getWrotAngle();
+    double getWristAngle();
     double getGripLength();
     
     string toString();
@@ -77,6 +79,22 @@ Arm::Arm(){
     gripServo = Servo::getServoInstance(Servo::Grip);
 }
 //actions
+void Arm::setToArm(Arm *arm){
+    this-> setPosition(arm->getCurrPosition());
+    this->setWrotAngle(arm->getWrotAngle());
+    this->setWristAngle(arm->getWristAngle());
+    this->setGripLength(arm->getGripLength());
+    this->currcart = arm->getCurrPosition();
+    this->baseXYZ = arm->getBaseXYZ();
+    this->elbowXYZ = arm->getElbowXYZ();
+    this->wristXYZ = arm->getWristXYZ();
+    this->baseServo->setRaw(arm->getBaseRaw());
+    this->shoulderServo->setRaw(arm->getShoulderRaw());
+    this->elbowServo->setRaw(arm->getElbowRaw());
+    this->wristServo->setRaw(arm->getWristRaw());
+    this->wrotServo->setRaw(arm->getWrotRaw());
+    this->gripServo->setRaw(arm->getGripRaw());
+}
 void Arm::setPosition(Cartesian c){
     currcart = c;
 }
@@ -120,11 +138,17 @@ Cartesian Arm::getBaseXYZ(){
 Cartesian Arm::getElbowXYZ(){
     return elbowXYZ;
 }
+Cartesian Arm::getWristXYZ(){
+    return wristXYZ;
+}
 double Arm::getWrotAngle(){
     return wrotServo -> getAngle();
 }
 double Arm::getGripLength(){
     return gripServo -> getAngle();
+}
+double Arm::getWristAngle(){
+    return wrotServo->getAngle();
 }
 
 string Arm::toString(){
@@ -154,7 +178,7 @@ bool Arm::convertXYZToRaw(){
     if(!currcart.getX() && !currcart.getY() && !currcart.getZ()) return false;
     
     //calculate the base
-    baseServo->setAngle(radToAngle(atan2(currcart.getX(), currcart.getY())));
+    baseServo->setAngle(radToAngle(atan2(currcart.getY(), currcart.getX())));
     
     //new x y plane
     double axis_y = currcart.getZ();
