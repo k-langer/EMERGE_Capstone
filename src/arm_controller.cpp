@@ -33,7 +33,7 @@ using namespace std;
 namespace pt = boost::posix_time;
 string SERIAL_PORT = "/dev/tty.usbserial-A901G712";
 string BAUD_RATE = "38400";
-unsigned int SLEEP_TIME = 10; //0.01 milsec
+unsigned int SLEEP_TIME = 0; //110 milliseconds
 unsigned int INIT_TIME = 10000000; //ten second
 int NO = 0;
 int YES = 1;
@@ -56,6 +56,8 @@ void process_input(int, string);
 string get_time();
 string int_to_string(int number);
 void get_current_time();
+
+bool debug = false;
 
 //main
 int main(int argc, const char **argv){
@@ -113,7 +115,7 @@ int main(int argc, const char **argv){
                     cout << "write to serial port...done" << endl;
                 }
             }
-            usleep(SLEEP_TIME);
+           // usleep(SLEEP_TIME);
         }
     } catch (sql::SQLException &e) {
         get_current_time();
@@ -142,56 +144,25 @@ string get_time(){
     return result;
 }
 void process_input(int fd, string input){
-    int index = 0, delay_time;
-
-    bool input_error = false;
-    index = 0;
-    input_error = false;
-    for(int i = 0; i < INPUT_COUNT; i++){
-        inputArray[i] = "";
-    }
-    for(int i = 0; i < input.length(); i++){
-        if(input[i] != ' '){
-            inputArray[index] += input[i];
-        }else{
-            index++;
-            if(index == INPUT_COUNT){
-                cout << "too many argument"<<endl;
-                input_error = true;
-            }
-        }
-    }
-    if(input.length() != INPUT_LENGTH && input.length() != 2){
-        input_error = true;
-    }
-    if(input_error == false){
-        get_current_time();
-        cout << "passing values to serial port.."<<endl;
-        for(int i = 0; i < INPUT_COUNT; i++){
+    get_current_time();
+    cout << "passing values to serial port.."<<endl;
+    toSerialPort(fd, input);
+    char response[1] = {'0'};
+    get_current_time();
+    cout << "Robot response:"<<endl;
+    while(*response != '\t'){
+        read (fd, response, sizeof response);
+        if(*response == '\t') break;
+        if(*response != '\n'){
             get_current_time();
-            cout << inputArray[i] << endl;
-            toSerialPort(fd, inputArray[i]);
+            cout << response[0];
         }
-        char response[1] = {'0'};
-        get_current_time();
-        cout << "Robot response:"<<endl;
-        while(*response != '\t'){
-            read (fd, response, sizeof response);
-            if(*response != '\n')
-                cout << response[0];
-            else
-                cout << endl;
-        }
-        cout << endl;
-        get_current_time();
-        cout << "received all messages"<<endl;
-    }else{
-        get_current_time();
-        cout << "[ERROR] ignore this input: " << input << endl;
-        get_current_time();
-        cout << "input length:" <<input.length() 
-             << " Max length: "<< INPUT_LENGTH << endl;
+        else
+            cout << endl;
     }
+    cout << endl;
+    get_current_time();
+    cout << "received all messages"<<endl;
 }
 
 void toSerialPort(int fd, string val){

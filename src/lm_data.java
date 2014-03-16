@@ -163,7 +163,15 @@ class LM_Listener extends Listener {
         // Get the most recent frame and report some basic information
         Frame frame = controller.frame();
         String msg;
-        
+        //pause the listener
+        if(frame.hands().size() > 1){
+            try{
+                Thread.sleep(3000);
+            }catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+            return;
+        }
         if (!frame.hands().empty()) {
             // Get the first hand
             Hand hand = frame.hands().get(0);
@@ -312,6 +320,11 @@ class LM_Listener extends Listener {
                             dTime + " 1 " + round(f_distance, 5);
             logger("Insert data: " + result);
             String query = "insert into xyz values(Default,'" + result + "');";
+            exec_query(this.statement, query);
+            result = "" + round(zpos, precision) + " " +
+                            round(xpos, precision) + " " + 
+                            round(ypos, precision);
+            query = "insert into xyz_tmp values(Default,'" + result + "');";
             exec_query(this.statement, query);
         }
 

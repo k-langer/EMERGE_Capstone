@@ -71,9 +71,11 @@ vector <int> PID::getSteps(int curr1, int goal1)
     //initialize curr and goal
     initParam(curr1, goal1);
     // Current value is in proper range
-	assert(curr >= motormin && curr <= motormax); 
+    cout << curr << " " << motormin <<  " " << motormax << endl;
+    cout << goal << " " << motormin <<  " " << motormax << endl;
+	assert(curr >= motormin && curr <= motormax);
     // Goal value is in proper range
-	assert(goal >= motormin && goal <= motormax); 
+	assert(goal >= motormin && goal <= motormax);
 	if (analysis) {
         cout << "Current: " << curr1
              << "; Goal: "  <<goal1
