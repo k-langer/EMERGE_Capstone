@@ -36,8 +36,8 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     // Robot graph setup
     this->robotGraphView = new UIGraphView();
     QWidget *robotGraphContainer = QWidget::createWindowContainer(this->robotGraphView);
-    robotGraphContainer->setMinimumSize(1,1);
-    robotGraphContainer->setMaximumSize(1000,1000);
+    robotGraphContainer->setMinimumSize(600,500);
+    robotGraphContainer->setMaximumSize(600,500);
     this->gridLayout->addWidget( robotGraphContainer, 0, 4, 3, 2 );
 
     this->_setupStatisticGrid();
