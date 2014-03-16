@@ -118,6 +118,8 @@ void UIMainWindow::_setupStatisticGrid()
     QGridLayout *statisticGrid = new QGridLayout();
     QWidget *statisticGridWindow = new QWidget();
     statisticGridWindow->setLayout( statisticGrid );
+    statisticGridWindow->setMinimumSize(600,175);
+    statisticGridWindow->setMaximumSize(600,175);
     this->gridLayout->addWidget( statisticGridWindow, 3, 4, 1, 1 );
 
     this->statisticLabels = std::vector<QLabel*>();
