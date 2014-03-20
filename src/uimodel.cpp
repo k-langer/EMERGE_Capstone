@@ -67,7 +67,7 @@ UIRobot UIModel::getCurrentRobotPosition()
     QString allValues = rawValues.toString();
     QStringList valueList = allValues.split(" ");
 
-    if (allValues.length() < 11) {
+    if (valueList.length() < 11) {
         qDebug() << "Database length was incorrect";
         return UIRobot();
     }
@@ -99,6 +99,18 @@ UIRobot UIModel::getCurrentRobotPosition()
     QString rawGripperZ = valueList.at(8);
     qreal gripperZ = rawGripperZ.toDouble();
     robot.centerGripper = QVector3D(gripperX * .01, gripperY * .01, gripperZ * .01);
+
+    QString rawWristRotateAngle = valueList.at(9);
+    qreal wristRotateAngle = rawWristRotateAngle.toDouble();
+
+    QString rawGripperLength = valueList.at(10);
+    qreal gripperLength = rawGripperLength.toDouble() * .02;
+    QVector3D leftGripper = robot.centerGripper;
+    leftGripper.setY(leftGripper.y() - gripperLength / 2);
+    robot.leftGripper = leftGripper;
+    QVector3D rightGripper = robot.centerGripper;
+    rightGripper.setY(rightGripper.y() + gripperLength / 2);
+    robot.rightGripper = rightGripper;
 
     return robot;
 }

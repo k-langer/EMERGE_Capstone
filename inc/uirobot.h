@@ -6,6 +6,8 @@
 class UIRobot {
 
 public:
+    QVector3D leftGripper;
+    QVector3D rightGripper;
     QVector3D centerGripper;
     QVector3D wrist;
     QVector3D shoulder;

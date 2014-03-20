@@ -11,7 +11,7 @@
 #define STATISTICS_PRECISION 3
 
 // Update interval in ms
-#define UPDATE_INTERVAL 800
+#define UPDATE_INTERVAL 10
 
 UIMainWindow::UIMainWindow( QWidget *parent )
     : QMainWindow( parent )
@@ -36,8 +36,8 @@ UIMainWindow::UIMainWindow( QWidget *parent )
     // Robot graph setup
     this->robotGraphView = new UIGraphView();
     QWidget *robotGraphContainer = QWidget::createWindowContainer(this->robotGraphView);
-    robotGraphContainer->setMinimumSize(1,1);
-    robotGraphContainer->setMaximumSize(1000,1000);
+    robotGraphContainer->setMinimumSize(600,500);
+    robotGraphContainer->setMaximumSize(600,500);
     this->gridLayout->addWidget( robotGraphContainer, 0, 4, 3, 2 );
 
     this->_setupStatisticGrid();
@@ -118,6 +118,8 @@ void UIMainWindow::_setupStatisticGrid()
     QGridLayout *statisticGrid = new QGridLayout();
     QWidget *statisticGridWindow = new QWidget();
     statisticGridWindow->setLayout( statisticGrid );
+    statisticGridWindow->setMinimumSize(600,175);
+    statisticGridWindow->setMaximumSize(600,175);
     this->gridLayout->addWidget( statisticGridWindow, 3, 4, 1, 1 );
 
     this->statisticLabels = std::vector<QLabel*>();
@@ -202,13 +204,16 @@ void UIMainWindow::setRobotPosition( UIRobot robotPosition )
 {
     this->robotGraphView->reset();
 
-    this->robotGraphView->addSphere( robotPosition.base, .8 );
+    this->robotGraphView->addSphere( robotPosition.base, .4 );
     this->robotGraphView->addCylinder( robotPosition.base, robotPosition.shoulder, .1 );
-    this->robotGraphView->addSphere( robotPosition.shoulder, .5 );
+    this->robotGraphView->addSphere( robotPosition.shoulder, .2 );
     this->robotGraphView->addCylinder( robotPosition.shoulder, robotPosition.wrist, .1 );
-    this->robotGraphView->addSphere( robotPosition.wrist, .5 );
+    this->robotGraphView->addSphere( robotPosition.wrist, .2 );
     this->robotGraphView->addCylinder( robotPosition.wrist, robotPosition.centerGripper, .1);
-    this->robotGraphView->addSphere( robotPosition.centerGripper, .5 );
+    this->robotGraphView->addSphere( robotPosition.centerGripper, .2 );
+    this->robotGraphView->addSphere( robotPosition.leftGripper, .2);
+    this->robotGraphView->addSphere( robotPosition.rightGripper, .2);
+    this->robotGraphView->addCylinder( robotPosition.leftGripper, robotPosition.rightGripper, .1);
 
     this->_setStatisticsWithRobotPosition( robotPosition );
 }
@@ -220,7 +225,6 @@ void UIMainWindow::setPressure( float pressure )
 
 void UIMainWindow::updateDataFromModel()
 {
-    qDebug() << "Updating";
     UIRobot robot = this->model->getCurrentRobotPosition();
     this->setRobotPosition( robot );
 }

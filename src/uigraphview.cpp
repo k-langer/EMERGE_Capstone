@@ -22,9 +22,10 @@ void UIGraphView::initializeGL( QGLPainter *painter )
 {
     painter->setStandardEffect( QGL::LitMaterial );
 
-    // Rotate camera 80 deg
+    // Rotate camera
+    camera()->rotateCenter( QQuaternion::fromAxisAndAngle( 0, 0, 1, -90 ) );
     camera()->rotateCenter( QQuaternion::fromAxisAndAngle( 0, 1, 0, -70 ) );
-    camera()->rotateCenter( QQuaternion::fromAxisAndAngle( 1, 0, 0, 90 ) );
+    camera()->rotateCenter( QQuaternion::fromAxisAndAngle( 0, 0, 1, 45 ) );
 
     // Move down center so 0,0,0 is close to bottom of screen
     camera()->setCenter( QVector3D(0, 0, 1.5) );
@@ -114,19 +115,19 @@ void UIGraphView::reset()
     this->update();
 
     // Add x,y,z axes
-    QGLSceneNode *xAxis = this->generateCylinder(QVector3D(0,0,0), QVector3D(100,0,0), .08);
+    QGLSceneNode *xAxis = this->generateCylinder(QVector3D(0,0,0), QVector3D(10,0,0), .08);
     QGLMaterial *red = new QGLMaterial();
     red->setColor(QColor(255,0,0));
     xAxis->setMaterial(red);
     this->nodes->push_back(xAxis);
 
-    QGLSceneNode *yAxis = this->generateCylinder(QVector3D(0,0,0), QVector3D(0,100,0), .08);
+    QGLSceneNode *yAxis = this->generateCylinder(QVector3D(0,0,0), QVector3D(0,10,0), .08);
     QGLMaterial *green = new QGLMaterial();
     green->setColor(QColor(0,255,0));
     yAxis->setMaterial(green);
     this->nodes->push_back(yAxis);
 
-    QGLSceneNode *zAxis = this->generateCylinder(QVector3D(0,0,0), QVector3D(0,0,100), .08);
+    QGLSceneNode *zAxis = this->generateCylinder(QVector3D(0,0,0), QVector3D(0,0,10), .08);
     QGLMaterial *blue = new QGLMaterial();
     blue->setColor(QColor(0,0,255));
     zAxis->setMaterial(blue);
