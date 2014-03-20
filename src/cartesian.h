@@ -4,7 +4,8 @@
 #include <cmath>
 
 using namespace std;
-
+#ifndef __CARTESIAN_H_INCLUDED__
+#define __CARTESIAN_H_INCLUDED__
 class Cartesian{
 public:
     Cartesian();
@@ -70,3 +71,4 @@ string Cartesian::toUICommandString(){
             to_string(y) + " " +
             to_string(z);
 }
+#endif

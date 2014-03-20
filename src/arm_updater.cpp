@@ -34,6 +34,7 @@
 #include "logger.h"
 #include "arm.h"
 #include "helper.h"
+#include "forbiddenZone.h"
 
 using namespace std;
 namespace pt = boost::posix_time;
@@ -78,6 +79,7 @@ int main(int argc, const char **argv){
     
     Arm *currArm = new Arm();
     Arm *prevArm = new Arm();
+    ForbiddenZone forbiddenZone;
     
     try{
         //connect to database
@@ -123,7 +125,7 @@ int main(int argc, const char **argv){
             c.setY(atof(strs[2].c_str()));
             c.setZ(atof(strs[3].c_str()) - BASE_HEIGHT*2 - 50);
             
-            if(c.getZ() < -50){
+            if(c.getZ() < -50 || forbiddenZone.contains(c)){
                 logger.d("Ignore input...");
                 logger.d(c.toString());
                 continue;
