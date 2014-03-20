@@ -17,7 +17,7 @@ private:
 };
 
 ForbiddenZone::ForbiddenZone(){
-    lowerCorner = Cartesian(20,20,0);
+    lowerCorner = Cartesian(20,20,-50);
     upperCorner = Cartesian(-20,-20,110);
 }
 

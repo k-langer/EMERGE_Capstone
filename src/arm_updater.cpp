@@ -154,39 +154,23 @@ int main(int argc, const char **argv){
             
             fWait = atoi(strs[7].c_str());
             
-/*            //BasePID.setDebug(true);
-            vector<int> baseStep = 
-                BasePID.getSteps(prevArm->getBaseRaw(), currArm->getBaseRaw());
-            vector<int> shoulderStep = 
-                ShoulderPID.getSteps(prevArm->getShoulderRaw(), currArm->getShoulderRaw());
-            vector<int> elbowStep = 
-                ElbowPID.getSteps(prevArm->getElbowRaw(), currArm->getElbowRaw());
-            vector<int> wristStep = 
-                WristPID.getSteps(prevArm->getWristRaw(), currArm->getWristRaw());
-            vector<int> wrotStep = 
-                WrotPID.getSteps(prevArm->getWrotRaw(), currArm->getWrotRaw());
-            vector<int> gripStep = 
-                GripPID.getSteps(prevArm->getGripRaw(), currArm->getGripRaw());*/
-            
             distance = c.distanceTo(prevArm->getCurrPosition());
             speed = distance / PROPER_SPEED;
             prevArm->setToArm(currArm);
-//            for(int i = 0; i < baseStep.size(); i++){
-                input_string = "CALL add_input('";
-                input_string += command_str;
-                input_string += Helper::formatString(to_string(currArm->getBaseRaw()),3);
-                input_string += Helper::formatString(to_string(currArm->getShoulderRaw()),3);
-                input_string += Helper::formatString(to_string(currArm->getElbowRaw()),3);
-                input_string += Helper::formatString(to_string(currArm->getWristRaw()),3);
-                input_string += Helper::formatString(to_string(currArm->getWrotRaw()),3);
-                input_string += Helper::formatString(to_string(currArm->getGripRaw()),3);
-                input_string += Helper::formatString(to_string(speed),4);
-                input_string += Helper::formatString(to_string(fWait),1);
-                input_string += "')";
-                logger.i("Success:" + input_string);
-                stmt->execute(input_string);
-                stmt->execute("CALL add_ui_input('"+ui_input+"')");
-  //          }
+            input_string = "CALL add_input('";
+            input_string += command_str;
+            input_string += Helper::formatString(to_string(currArm->getBaseRaw()),3);
+            input_string += Helper::formatString(to_string(currArm->getShoulderRaw()),3);
+            input_string += Helper::formatString(to_string(currArm->getElbowRaw()),3);
+            input_string += Helper::formatString(to_string(currArm->getWristRaw()),3);
+            input_string += Helper::formatString(to_string(currArm->getWrotRaw()),3);
+            input_string += Helper::formatString(to_string(currArm->getGripRaw()),3);
+            input_string += Helper::formatString(to_string(speed),4);
+            input_string += Helper::formatString(to_string(fWait),1);
+            input_string += "')";
+            logger.i("Success:" + input_string);
+            stmt->execute(input_string);
+            stmt->execute("CALL add_ui_input('"+ui_input+"')");
             usleep(SLEEP_TIME);
         }
 
