@@ -164,9 +164,9 @@ class LM_Listener extends Listener {
         Frame frame = controller.frame();
         String msg;
         //pause the listener
-        if(frame.hands().size() > 1){
+        if(frame.hands().count() > 1){
             try{
-                Thread.sleep(3000);
+                Thread.sleep(3000);//sleep for three seconds
             }catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
@@ -185,13 +185,11 @@ class LM_Listener extends Listener {
             if(dTime < 150) return;
             previous_time = current_time;
             total_frame++;
-            //System.out.println(frame.hands().get(0).fingers().count()); 
 
             Vector v = hand.palmVelocity();
             double speed = Math.sqrt(Math.pow(v.getX(), 2)
                            + Math.pow(v.getZ(), 2)
-                           + Math.pow(v.getY(), 2)); 
-            logger("Palm Speed:" + String.valueOf((long)speed));
+                           + Math.pow(v.getY(), 2));
             if(speed > 400){
                 logger("too fast......speed: " + String.valueOf((long)speed));
                 return;
@@ -235,10 +233,6 @@ class LM_Listener extends Listener {
                if(dPos < MOTION_DISTANCE && 
                   dWrot < WRISTROT_CHANGE && 
                   dFin < FINGERS_DISTANCE_CHANGE){
-                   logger("No Motion...");
-                   logger("dPos: ", dPos, "Min: ", MOTION_DISTANCE);
-                   logger("dWrot: ", dWrot, " Min: ", WRISTROT_CHANGE);
-                   logger("dFin: ", dFin, " Min: ", FINGERS_DISTANCE_CHANGE);
                    no_motion++;
                    return;
                } else if(dPos > MOTION_DISTANCE &&
