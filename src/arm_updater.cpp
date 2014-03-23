@@ -49,10 +49,11 @@ int MOVE_TIME = 7;
 unsigned int SLEEP_TIME = 1000;//100 milliseconds
 int XYZ_INPUT_COUNT = 9;
 double PRECISION = 0.0000000001;
-float PROPER_SPEED = 0.1;
+float PROPER_SPEED = 0.2;
 
 vector<string> split(string str, char delimiter);
 string emerge(vector<string> strs, char delimiter);
+int getBiggestChange(Arm* currArm, Arm* prevArm);
 
 int main(int argc, const char **argv){
     Cartesian c;
@@ -154,8 +155,8 @@ int main(int argc, const char **argv){
             
             fWait = atoi(strs[7].c_str());
             
-            distance = c.distanceTo(prevArm->getCurrPosition());
-            speed = distance / PROPER_SPEED;
+            int change = getBiggestChange(currArm,prevArm);
+            speed = change / PROPER_SPEED;
             prevArm->setToArm(currArm);
             input_string = "CALL add_input('";
             input_string += command_str;
@@ -171,7 +172,7 @@ int main(int argc, const char **argv){
             logger.i("Success:" + input_string);
             stmt->execute(input_string);
             stmt->execute("CALL add_ui_input('"+ui_input+"')");
-            usleep(SLEEP_TIME);
+            usleep(speed);
         }
 
         
@@ -206,4 +207,16 @@ string emerge(vector<string> strs, char delimiter){
         if(i != strs.size() - 1) rs += delimiter;
     }
     return rs;
+}
+int getBiggestChange(Arm* currArm, Arm* prevArm){
+    int change = abs(currArm->getBaseRaw() - prevArm->getBaseRaw());
+    if(change < abs(currArm->getShoulderRaw() - prevArm->getShoulderRaw()))
+        change = abs(currArm->getShoulderRaw() - prevArm->getShoulderRaw());
+    if(change < abs(currArm->getElbowRaw() - prevArm->getElbowRaw()))
+        change = abs(currArm->getElbowRaw() - prevArm->getElbowRaw());
+    if(change < abs(currArm->getWristRaw() - prevArm->getWristRaw()))
+        change = abs(currArm->getWristRaw() - prevArm->getWristRaw());
+    if(change < abs(currArm->getWrotRaw() - prevArm->getWrotRaw()))
+        change = abs(currArm->getWrotRaw() - prevArm->getWrotRaw());
+    return change;
 }

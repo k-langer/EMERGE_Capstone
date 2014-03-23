@@ -115,7 +115,7 @@ int             g_sShoulder;            // Current shoulder target
 int             g_sElbow;               // Current
 int             g_sWrist;               // Current Wrist value
 int             g_sWristRot;            // Current Wrist rotation
-int             g_sGrip;                // Current Grip position
+int             g_sGrip = 256;                // Current Grip position
 
 // BUGBUG:: I hate too many globals...
 int sBase, sShoulder, sElbow, sWrist, sWristRot, sGrip;
@@ -141,6 +141,7 @@ extern void MSound(byte cNotes, ...);
 //====================================================================================================
 void setup() {
   pinMode(0,OUTPUT);  
+  
   Serial.begin(38400);
   Serial.println("Reactor Online.");
   
@@ -244,6 +245,17 @@ void loop(){
 }
 
 //===================================================================================================
+// Determine where the gripper is gripping something
+int GRIPPING_VALUE = 100;
+boolean isGripping(void){
+  int val = analogRead(A0);
+  if(val >= GRIPPING_VALUE)
+    return true;
+  else
+    return false;
+}
+//===================================================================================================
+//===================================================================================================
 // PutArmToSleep
 //===================================================================================================
 void PutArmToSleep(void) {
@@ -262,6 +274,12 @@ void PutArmToSleep(void) {
 //===================================================================================================
 void MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, int sGrip, int wTime, boolean fWait) {
 
+  //prevent gripper change to smaller value if gripper is gripping
+  if(isGripping()){
+    if(sGrip < g_sGrip){
+      sGrip = g_sGrip;
+    }
+  }
   int sMaxDelta;
   int sDelta;
 
@@ -279,9 +297,10 @@ void MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, 
   // is used in the interpolating code...
   while (bioloid.interpolating > 0) {
     bioloid.interpolateStep();
-    isGripLoaded();
     delay(3);
   }
+  
+  g_sGrip = sGrip;
 
   // Also lets limit how fast the servos will move as to not get whiplash.
   bioloid.setNextPose(SID_BASE, sBase);
@@ -305,25 +324,14 @@ void MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, 
 
   bioloid.setNextPose(SID_GRIP, sGrip);
 
-
-  // Save away the current positions...
-  //g_sBase = sBase;
-//  g_sShoulder = sShoulder;
-//  g_sElbow = sElbow;
-//  g_sWrist = sWrist;
-//  g_sWristRot = sWristRot;
-//  g_sGrip = sGrip;
-
   bioloid.interpolateSetup(wTime);
 
   // Do at least the first movement
   bioloid.interpolateStep();
-  isGripLoaded();
   // And if asked to, wait for the previous move to complete...
   if (fWait) {
     while (bioloid.interpolating > 0) {
       bioloid.interpolateStep();
-      isGripLoaded();
       delay(3);
     }
   }

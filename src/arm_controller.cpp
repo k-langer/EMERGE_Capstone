@@ -33,7 +33,7 @@ using namespace std;
 namespace pt = boost::posix_time;
 string SERIAL_PORT = "/dev/tty.usbserial-A901G712";
 string BAUD_RATE = "38400";
-unsigned int SLEEP_TIME = 0; //110 milliseconds
+unsigned int SLEEP_TIME = 10; //110 milliseconds
 unsigned int INIT_TIME = 10000000; //ten second
 int NO = 0;
 int YES = 1;
