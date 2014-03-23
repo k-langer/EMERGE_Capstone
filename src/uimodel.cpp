@@ -14,7 +14,7 @@
 #define DATABASE_HOST "localhost"
 #define DATABASE_NAME "capstone"
 #define DATABASE_USERNAME "zhen"
-#define DATABASE_PASSWORD ""
+#define DATABASE_PASSWORD "Zhenjiang#1"
 #define DATABASE_PROCEDURE "get_ui_data"
 
 UIModel::UIModel()
