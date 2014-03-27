@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include "util.h"
 
 using namespace std;
 #ifndef __CARTESIAN_H_INCLUDED__

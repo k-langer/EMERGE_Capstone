@@ -56,8 +56,9 @@ lm_count=`ps aux | grep $lm_process | grep -v grep | wc -l`
 if [ $lm_count -eq 0 ]
 then
     echo "starting $lm_name..."
-    java -Djava.library.path=/opt/local/LeapSDK/lib $lm_process > $log/lm_data.log & 
     sleep 3
+    #java -Djava.library.path=/opt/local/LeapSDK/lib $lm_process > $log/lm_data.log & 
+    java $lm_process > $log/lm_data.log & 
 else
     echo "the $lm_name has already been running..."
 fi
