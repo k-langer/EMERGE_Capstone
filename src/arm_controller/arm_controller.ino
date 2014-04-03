@@ -25,10 +25,9 @@
 //=============================================================================
 // Global Include files
 //=============================================================================
-#include <ax12.h>
-#include <BioloidController.h>
-#include <ArmControl.h>
-#include <Wire.h> 
+#include "ax12.h"
+#include "BioloidController.h"
+#include <Wire.h>
 #include <math.h>
 
 
@@ -91,7 +90,6 @@ enum {
 //=============================================================================
 // Global Objects
 //=============================================================================
-ArmControl armcontrol = ArmControl();
 BioloidController bioloid = BioloidController(1000000);
 //LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
@@ -117,7 +115,6 @@ int             g_sWrist;               // Current Wrist value
 int             g_sWristRot;            // Current Wrist rotation
 int             g_sGrip = 256;                // Current Grip position
 
-// BUGBUG:: I hate too many globals...
 int sBase, sShoulder, sElbow, sWrist, sWristRot, sGrip;
 int sDeltaTime = 900;
 
@@ -206,8 +203,6 @@ void sleep(int t){
   }
   
 }
-//MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, int sGrip, int wTime, boolean fWait)
-// MoveArmTo(512, 212, 212, 512, 512, 256, sDeltaTime, true); 
 void loop(){
   //01 sleep
   //02 torque on
@@ -276,10 +271,10 @@ void MoveArmTo(int sBase, int sShoulder, int sElbow, int sWrist, int sWristRot, 
 
   //prevent gripper change to smaller value if gripper is gripping
   if(isGripping()){
-    if(sGrip < g_sGrip){
-      sGrip = g_sGrip;
-    }
+    int tmp = bioloid.getCurPose(SID_GRIP);
+    sGrip = sGrip < tmp ? tmp : sGrip;
   }
+  
   int sMaxDelta;
   int sDelta;
 
