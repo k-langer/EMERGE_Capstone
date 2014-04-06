@@ -69,7 +69,9 @@ UIRobot UIModel::getCurrentRobotPosition()
 
     if (valueList.length() < 11) {
         qDebug() << "Database length was incorrect";
-        return UIRobot();
+        UIRobot robot = UIRobot();
+        robot.base = QVector3D(-1,-1,-1);
+        return robot;
     }
 
     UIRobot robot = UIRobot();

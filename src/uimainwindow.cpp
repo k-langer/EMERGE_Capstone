@@ -226,5 +226,7 @@ void UIMainWindow::setPressure( float pressure )
 void UIMainWindow::updateDataFromModel()
 {
     UIRobot robot = this->model->getCurrentRobotPosition();
-    this->setRobotPosition( robot );
+    if (robot.base.x() == 0) {
+        this->setRobotPosition( robot );
+    }
 }
