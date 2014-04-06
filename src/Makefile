@@ -6,11 +6,11 @@ JCC = javac
 SQLFLAGS:=$(shell mysql_config --cflags)
 SQLLIBS:=$(shell mysql_config --libs)
 CFLAGS = -g -O0 -lm
-CPPFLAGS = -lmysqlcppconn
+CPPFLAGS = -lmysqlcppconn -std=c++11
 INC = -I/opt/local/include -I/usr/local/include/cppconn -I/usr/local/include 
-LEAPPATH = ../leap/lib/LeapJava.jar
+LEAPPATH = .:/opt/local/LeapSDK/lib/LeapJava.jar
 BINARY = ../binary/
-JCPATH = "$(LEAPPATH):/opt/local/mysql-connector-java/mysql-connector-java.jar"
+JCPATH = -classpath "$(LEAPPATH):/opt/local/mysql-connector-java/mysql-connector-java.jar"
 ARM_UPDATER = arm_updater
 ARM_CONTROLLER = arm_controller
 
@@ -31,7 +31,7 @@ install-qt:
 	sudo apt-get install libqt5core5 libQt5Gui5 libQt5Network5 libqt5xml5 libqt5xmlpatterns5 libqt5svg5 libqt5printsupport5 libqt5webkit5
 
 lm_data : $(LM_DATA).java
-	$(JCC) -classpath $(JCPATH) -d $(BINARY) $(LM_DATA).java
+	$(JCC) $(JCPATH) -d $(BINARY) $(LM_DATA).java
 
 arm_controller : $(ARM_CONTROLLER).o
 	$(CC) -o $(ARM_CONTROLLER).o -c $(SQLFLAGS) $(ARM_CONTROLLER).cpp

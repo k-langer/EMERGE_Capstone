@@ -3,12 +3,19 @@ HOME_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 des="$HOME_DIR/binary"
 cd $des
 log="$HOME_DIR/log"
+javaLib="$HOME_DIR/leap/lib"
 updater_process="Updater"
 updater_name="Updater"
 controller_process="Controller"
 controller_name="Controller"
 lm_process="LM_DATA"
 lm_name="Leap Motion Data Gathering"
+
+echo "cleaning up database..."
+`mysql -u zhen -pZhenjiang#1 capstone --execute='delete from command;'`
+`mysql -u zhen -pZhenjiang#1 capstone --execute='delete from xyz;'`
+`mysql -u zhen -pZhenjiang#1 capstone --execute='delete from ui_xyz;'`
+sleep 3
 
 if [ ! -d $log ]
 then
@@ -57,8 +64,10 @@ if [ $lm_count -eq 0 ]
 then
     echo "starting $lm_name..."
     sleep 3
-    #java -Djava.library.path=/opt/local/LeapSDK/lib $lm_process > $log/lm_data.log & 
-    java $lm_process > $log/lm_data.log & 
+    echo "java -Djava.library.path=/opt/local/LeapSDK/lib/x64/ $lm_process"
+    pwd
+    java -Djava.library.path=/opt/local/LeapSDK/lib/x64/ $lm_process > $log/lm_data.log & 
+    #java -classpath "$javaLib/LeapJava.jar:./" $lm_process > $log/lm_data.log & 
 else
     echo "the $lm_name has already been running..."
 fi

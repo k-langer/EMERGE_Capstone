@@ -171,8 +171,8 @@ class LM_Listener extends Listener {
                 Thread.currentThread().interrupt();
             }
             return;
-        }
-        if (!frame.hands().empty()) {
+        } 
+        if (frame.hands().count() > 0 ) {
             // Get the first hand
             Hand hand = frame.hands().get(0);
 
@@ -209,7 +209,7 @@ class LM_Listener extends Listener {
             double left_size = 3;
             double right_size = 3;
             double f_distance = -1;
-            if (!fingers.empty()) {
+            if (fingers.count() > 0) {
                 Finger left_finger = frame.fingers().leftmost();
                 Finger right_finger = frame.fingers().rightmost();
                 f_distance = left_finger.tipPosition().distanceTo(
